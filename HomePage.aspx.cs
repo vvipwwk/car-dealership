@@ -9,12 +9,12 @@ namespace CarDealership
 {
     public partial class HomePage : System.Web.UI.Page
     {
-        protected void ImageButton1_Click(object sender, ImageClickEventArgs e)
+        protected void ImageButton1_Click(object sender, EventArgs e)
         {
             Response.Redirect("CustLogin.aspx");
         }
 
-        protected void ImageButton2_Click(object sender, ImageClickEventArgs e)
+        protected void ImageButton2_Click(object sender, EventArgs e)
         {
             Response.Redirect("StaffLogin.aspx");
         }

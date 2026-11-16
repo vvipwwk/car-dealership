@@ -1,67 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
 using System.Text;
+using System.Web;
+using System.Web.UI;
 
 namespace CarDealership
 {
-    public partial class CVehicles : System.Web.UI.Page
+    public partial class CVehicles : Page
     {
-        SqlConnection con = new SqlConnection(@"Data Source=DELL-LATITUDE-5\SQLEXPRESS;Initial Catalog=CarDealer;Integrated Security=True");
+        private readonly string connectionString = ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            //vehicle lists table display
+            if (IsPostBack) return;
 
-            if (!Page.IsPostBack)
+            DataTable vehicles = new DataTable();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlDataAdapter adapter = new SqlDataAdapter("select c.[cid],c.[brand],c.[model],c.[type],c.[engine],c.[country],c.[price],d.[img] from [dbo].[CarLists] c left join [dbo].[CarDetail] d on d.[cid] = c.[cid]", connection))
+                adapter.Fill(vehicles);
+
+            StringBuilder cards = new StringBuilder("<div class=\"vehicle-grid\">");
+            foreach (DataRow vehicle in vehicles.Rows)
             {
-                string sqlquery = "select [cid],[brand],[model],[type],[engine],[country] from [dbo].[CarLists]";
-                SqlCommand sqlconn = new SqlCommand(sqlquery, con);
-                con.Open();
-                SqlDataAdapter sda = new SqlDataAdapter(sqlconn);
-                DataTable dt = new DataTable();
-                sda.Fill(dt);
-                StringBuilder sb = new StringBuilder();
-                sb.Append("<center>");
-                sb.Append("<h1>Vehicle Line-Up</h1>");
-                sb.Append("<hr/>");
-                sb.Append("<table border = 1>");
-                sb.Append("<tr>");
-                foreach (DataColumn dc in dt.Columns)
-                {
-                    sb.Append("<th>");
-                    sb.Append(dc.ColumnName.ToUpper());
-                    sb.Append("</th>");
-                }
-                sb.Append("</tr>");
-
-                foreach (DataRow dr in dt.Rows)
-                {
-                    sb.Append("<tr>");
-                    string carID = null;
-                    foreach (DataColumn dc in dt.Columns)
-                    {
-                        sb.Append("<th>");
-                        carID = dr.Field<string>(0);
-                        sb.Append(dr[dc.ColumnName].ToString());
-                        sb.Append("</th>");
-                    }
-                    sb.Append("<th>");
-                    sb.Append("<a href = 'CVehicleDetails.aspx?cid=" + carID + "'><button type = 'button'>Details</button></a>");
-                    sb.Append("</th>");
-                    sb.Append("</tr>");
-                }
-
-                sb.Append("</table>");
-                sb.Append("</center>");
-                vehicledb.Controls.Add(new Label { Text = sb.ToString() });
-                con.Close();
+                string carId = Convert.ToString(vehicle["cid"]);
+                string make = HttpUtility.HtmlEncode(Convert.ToString(vehicle["brand"]));
+                string model = HttpUtility.HtmlEncode(Convert.ToString(vehicle["model"]));
+                string type = HttpUtility.HtmlEncode(Convert.ToString(vehicle["type"]));
+                string engine = HttpUtility.HtmlEncode(Convert.ToString(vehicle["engine"]));
+                string country = HttpUtility.HtmlEncode(Convert.ToString(vehicle["country"]));
+                string price = HttpUtility.HtmlEncode(Convert.ToString(vehicle["price"]));
+                string image = Convert.ToString(vehicle["img"]);
+                cards.Append("<article class=\"vehicle-card\">");
+                if (String.IsNullOrWhiteSpace(image))
+                    cards.Append("<div class=\"vehicle-art\" aria-hidden=\"true\"></div>");
+                else
+                    cards.Append("<div class=\"vehicle-photo\"><img src=\"").Append(HttpUtility.HtmlAttributeEncode(image)).Append("\" alt=\"").Append(make).Append(" ").Append(model).Append("\" /></div>");
+                cards.Append("<div class=\"vehicle-card-body\">");
+                cards.Append("<h2>").Append(make).Append(" ").Append(model).Append("</h2>");
+                cards.Append("<div class=\"vehicle-meta\">").Append(type).Append(" · ").Append(engine).Append("<br />Imported from ").Append(country).Append("</div>");
+                cards.Append("<div class=\"vehicle-price\">RM ").Append(price).Append("</div><div class=\"vehicle-actions\">");
+                cards.Append("<a class=\"btn btn-small\" href=\"CVehicleDetails.aspx?cid=").Append(HttpUtility.UrlEncode(carId)).Append("\">View details</a></div></div></article>");
             }
+            cards.Append("</div>");
+            if (vehicles.Rows.Count == 0)
+                cards = new StringBuilder("<p class=\"page-intro\">There are no vehicles listed right now. Please check back soon.</p>");
+            vehicledb.Controls.Add(new LiteralControl(cards.ToString()));
         }
     }
 }

@@ -39,7 +39,7 @@ namespace CarDealership
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton ImageButton1;
+        protected global::System.Web.UI.WebControls.Button ImageButton1;
 
         /// <summary>
         /// ImageButton2 control.
@@ -48,7 +48,7 @@ namespace CarDealership
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton ImageButton2;
+        protected global::System.Web.UI.WebControls.Button ImageButton2;
 
         /// <summary>
         /// Label2 control.

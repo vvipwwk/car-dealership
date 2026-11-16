@@ -4,7 +4,9 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Staff Login - CarImport.my</title>
+    <link rel="stylesheet" href="Site.css" />
     <style type="text/css">
         .auto-style1 {
             width: 100%;
@@ -36,10 +38,11 @@
         }
     </style>
 </head>
-<body style="background-image:url(https://i.pinimg.com/originals/fe/7f/d0/fe7fd0869cd8ea07381304b97429178b.png); ">
+<body class="auth-page">
     <form id="form1" runat="server">
-        <div style="width:750px;background-color:white;margin:50px auto;padding:50px">
-            <asp:Label ID="Label1" runat="server" Font-Bold="True" Font-Size="30pt" Text="Staff Login - CarImport.my"></asp:Label>
+        <div class="auth-card">
+            <span class="eyebrow">CarImport.my</span>
+            <asp:Label ID="Label1" runat="server" CssClass="page-title" Font-Bold="True" Font-Size="30pt" Text="Staff sign in"></asp:Label>
             <br />
             <br />
             <table class="auto-style1">

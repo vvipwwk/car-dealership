@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,7 +12,7 @@ namespace CarDealership
 {
     public partial class StaffReg : System.Web.UI.Page
     {
-        SqlConnection con = new SqlConnection(@"Data Source=DELL-LATITUDE-5\SQLEXPRESS;Initial Catalog=CarDealer;Integrated Security=True");
+        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {

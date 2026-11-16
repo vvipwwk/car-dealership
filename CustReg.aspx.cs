@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -11,13 +12,13 @@ namespace CarDealership
 {
     public partial class CustReg : System.Web.UI.Page
     {
-        SqlConnection con = new SqlConnection(@"Data Source=DELL-LATITUDE-5\SQLEXPRESS;Initial Catalog=CarDealer;Integrated Security=True");
+        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
             con.Open();
             SqlCommand cmd = con.CreateCommand();
             cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "insert into [dbo].[Customer] values (@username, @password, @fullname, @dateofbirth, @sex, @contactno, @email)";
+            cmd.CommandText = "insert into [dbo].[Customer] ([username], [password], [fullname], [DOB], [sex], [contactno], [email]) values (@username, @password, @fullname, @dateofbirth, @sex, @contactno, @email)";
             cmd.Parameters.AddWithValue("@username", txtUsername.Text);
             cmd.Parameters.AddWithValue("@password", txtPassword.Text);
             cmd.Parameters.AddWithValue("@fullname", txtFName.Text);

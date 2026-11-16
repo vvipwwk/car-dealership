@@ -1,83 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
 using System.Text;
+using System.Web;
+using System.Web.UI;
 
 namespace CarDealership
 {
-    public partial class BuyCar : System.Web.UI.Page
+    public partial class BuyCar : Page
     {
-        SqlConnection con = new SqlConnection(@"Data Source=DELL-LATITUDE-5\SQLEXPRESS;Initial Catalog=CarDealer;Integrated Security=True");
+        private readonly string connectionString = ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString;
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            //fetch customer user id
+            if (IsPostBack) return;
 
-            int uid = 0;
-            string sqlquery2 = "select [uid] from [dbo].[Customer]";
-            SqlCommand sqlcomm2 = new SqlCommand(sqlquery2, con);
-            con.Open();
-            SqlDataReader reader = sqlcomm2.ExecuteReader();
-            if (reader.HasRows)
+            DataTable vehicles = new DataTable();
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlDataAdapter adapter = new SqlDataAdapter("select c.[cid],c.[brand],c.[model],c.[type],c.[engine],c.[country],c.[price],d.[img] from [dbo].[CarLists] c left join [dbo].[CarDetail] d on d.[cid] = c.[cid]", connection))
+                adapter.Fill(vehicles);
+
+            StringBuilder cards = new StringBuilder("<div class=\"vehicle-grid\">");
+            foreach (DataRow vehicle in vehicles.Rows)
             {
-                while (reader.Read())
-                {
-                    uid = (int)reader.GetValue(0);
-                }
+                string carId = Convert.ToString(vehicle["cid"]);
+                string make = HttpUtility.HtmlEncode(Convert.ToString(vehicle["brand"]));
+                string model = HttpUtility.HtmlEncode(Convert.ToString(vehicle["model"]));
+                string image = Convert.ToString(vehicle["img"]);
+                cards.Append("<article class=\"vehicle-card\">");
+                if (String.IsNullOrWhiteSpace(image))
+                    cards.Append("<div class=\"vehicle-art\" aria-hidden=\"true\"></div>");
+                else
+                    cards.Append("<div class=\"vehicle-photo\"><img src=\"").Append(HttpUtility.HtmlAttributeEncode(image)).Append("\" alt=\"").Append(make).Append(" ").Append(model).Append("\" /></div>");
+                cards.Append("<div class=\"vehicle-card-body\">");
+                cards.Append("<h2>").Append(make).Append(" ").Append(model).Append("</h2>");
+                cards.Append("<div class=\"vehicle-meta\">").Append(HttpUtility.HtmlEncode(Convert.ToString(vehicle["type"]))).Append(" · ").Append(HttpUtility.HtmlEncode(Convert.ToString(vehicle["engine"])));
+                cards.Append("<br />Imported from ").Append(HttpUtility.HtmlEncode(Convert.ToString(vehicle["country"]))).Append("</div>");
+                cards.Append("<div class=\"vehicle-price\">RM ").Append(HttpUtility.HtmlEncode(Convert.ToString(vehicle["price"])));
+                cards.Append("</div><div class=\"vehicle-actions\"><a class=\"btn btn-small\" href=\"BookCar.aspx?cid=").Append(HttpUtility.UrlEncode(carId)).Append("\">Book this vehicle</a></div></div></article>");
             }
-            con.Close();
-
-            //vehicle lists table display
-
-            if (!Page.IsPostBack)
-            {
-                string sqlquery = "select [cid],[brand],[model],[type],[engine],[country] from [dbo].[CarLists]";
-                SqlCommand sqlconn = new SqlCommand(sqlquery, con);
-                con.Open();
-                SqlDataAdapter sda = new SqlDataAdapter(sqlconn);
-                DataTable dt = new DataTable();
-                sda.Fill(dt);
-                StringBuilder sb = new StringBuilder();
-                sb.Append("<center>");
-                sb.Append("<h1>Vehicle Line-Up</h1>");
-                sb.Append("<hr/>");
-                sb.Append("<table border = 1>");
-                sb.Append("<tr>");
-                foreach (DataColumn dc in dt.Columns)
-                {
-                    sb.Append("<th>");
-                    sb.Append(dc.ColumnName.ToUpper());
-                    sb.Append("</th>");
-                }
-                sb.Append("</tr>");
-
-                foreach (DataRow dr in dt.Rows)
-                {
-                    sb.Append("<tr>");
-                    string carID = null;
-                    foreach (DataColumn dc in dt.Columns)
-                    {
-                        sb.Append("<th>");
-                        carID = dr.Field<string>(0);
-                        sb.Append(dr[dc.ColumnName].ToString());
-                        sb.Append("</th>");
-                    }
-                    sb.Append("<th>");
-                    sb.Append("<a href = 'BookCar.aspx?cid=" + carID + "'><button type = 'button'>Book</button></a>");
-                    sb.Append("</th>");
-                    sb.Append("</tr>");
-                }
-
-                sb.Append("</table>");
-                sb.Append("</center>");
-                saledb.Controls.Add(new Label { Text = sb.ToString() });
-                con.Close();
-            }
+            cards.Append("</div>");
+            if (vehicles.Rows.Count == 0)
+                cards = new StringBuilder("<p class=\"page-intro\">There are no vehicles available to book right now.</p>");
+            saledb.Controls.Add(new LiteralControl(cards.ToString()));
         }
     }
 }

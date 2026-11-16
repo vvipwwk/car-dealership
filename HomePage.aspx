@@ -1,52 +1,33 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="HomePage.aspx.cs" Inherits="CarDealership.HomePage" %>
-
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="HomePage.aspx.cs" Inherits="CarDealership.HomePage" %>
 <!DOCTYPE html>
-
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title>CarImport.my</title>
-    <style type="text/css">
-        .auto-style1 {
-            width: 100%;
-        }
-        .auto-style2 {
-            width: 309px;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CarImport.my · Find your next drive</title>
+    <link rel="stylesheet" href="Site.css" />
 </head>
-<body style="background-image:url(https://static.vecteezy.com/system/resources/previews/002/196/579/original/modern-abstract-geometric-background-free-vector.jpg); ">
+<body>
     <form id="form1" runat="server">
-        <div style="width:750px;background-color:white;margin:50px auto;padding:50px">
-            <asp:Label ID="Label1" runat="server" Font-Bold="True" Font-Size="30pt" Text="Welcome To CarImport.my"></asp:Label>
-            <br />
-            <br />
-            <br />
-            <table class="auto-style1">
-                <tr>
-                    <td class="auto-style2">
-                        <asp:ImageButton ID="ImageButton1" runat="server" Height="127px" ImageUrl="~/customer.png" OnClick="ImageButton1_Click" Width="155px" />
-                    </td>
-                    <td>
-                        <asp:ImageButton ID="ImageButton2" runat="server" Height="153px" ImageUrl="~/dealer.png" OnClick="ImageButton2_Click" Width="153px" />
-                    </td>
-                </tr>
-                <tr>
-                    <td class="auto-style2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <asp:Label ID="Label2" runat="server" Text="Customer Login "></asp:Label>
-                    </td>
-                    <td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <asp:Label ID="Label3" runat="server" Text="Staff Login"></asp:Label>
-                    </td>
-                </tr>
-            </table>
-            <br />
-&nbsp;&nbsp;&nbsp;&nbsp;
-            <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <br />
-            <br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        </div>
+        <header class="site-header"><a class="brand-mark" href="HomePage.aspx">CarImport<span>.my</span></a><span class="welcome-text">Curated cars. A better way to buy.</span></header>
+        <main class="site-body">
+            <section class="hero">
+                <div class="hero-content">
+                    <span class="eyebrow">Your next chapter starts here</span>
+                    <h1>Find the car that feels like yours.</h1>
+                    <p>Explore our hand-picked vehicle line-up and get in touch with our team when you find the right fit.</p>
+                    <div class="hero-actions">
+                        <a class="btn" href="CustLogin.aspx">Customer sign in</a>
+                        <a class="btn btn-secondary" href="StaffLogin.aspx">Staff sign in</a>
+                    </div>
+                </div>
+            </section>
+            <section class="feature-row" aria-label="Our service">
+                <div class="feature-card"><strong>Selected vehicles</strong><span>A considered line-up of cars for every kind of drive.</span></div>
+                <div class="feature-card"><strong>Clear details</strong><span>Review key specifications and pricing before you enquire.</span></div>
+                <div class="feature-card"><strong>Personal support</strong><span>Our team is ready to help with your next step.</span></div>
+            </section>
+        </main>
+        <footer class="site-footer">CarImport.my · Find your next drive</footer>
     </form>
 </body>
 </html>
