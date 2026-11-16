@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap>
+	<siteMapNode title="Home" description="Home" url="~/CustHome.aspx" >
+		<siteMapNode title="Vehicles Line-Up" description="Vehicles" url="~/CVehicles.aspx"></siteMapNode>
+		<siteMapNode title="Book your car" description="Purchase" url="~/BuyCar.aspx"></siteMapNode>
+	</siteMapNode>
+</siteMap>

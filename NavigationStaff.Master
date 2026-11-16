@@ -1,0 +1,45 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="NavigationStaff.master.cs" Inherits="CarDealership.NavigationStaff" %>
+
+<!DOCTYPE html>
+
+<html>
+<head runat="server">
+    <title>CarImport.my : Staff HomePage</title>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+    <style type="text/css">
+        .auto-style1 {
+            width: 100%;
+        }
+        .auto-style2 {
+            width: 291px;
+        }
+    </style>
+</head>
+<body style="height: 435px;background-image:url(https://img.freepik.com/free-vector/stylish-hexagonal-line-pattern-background_1017-19742.jpg);">
+    <form id="form1" runat="server">
+        <div>
+            <asp:Button ID="btnLogOut" runat="server" OnClick="btnLogOut_Click" Text="Log Out" />
+            <br />
+            <h1 style="width: 839px">CarImport.my</h1>
+        </div>
+        <p>
+&nbsp;Welcome,
+            <asp:Label ID="lblStaffname" runat="server"></asp:Label>
+        </p>
+        <table class="auto-style1">
+            <tr>
+                <td class="auto-style2">
+                    <asp:TreeView ID="TreeView1" runat="server" DataSourceID="SiteMapDataSource1" ShowLines="True" Width="166px">
+                    </asp:TreeView>
+                    <asp:SiteMapDataSource ID="SiteMapDataSource1" runat="server" SiteMapProvider="SiteMap2"/>
+                </td>
+                <td>
+                    <asp:ContentPlaceHolder ID="ContentPlaceHolder2" runat="server">
+                    </asp:ContentPlaceHolder>
+                </td>
+            </tr>
+        </table>
+    </form>
+</body>
+</html>

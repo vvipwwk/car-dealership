@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<siteMap>
+	<siteMapNode title="Home" description="Home" url="~/StaffHome.aspx" >
+		<siteMapNode title="Vehicles Managements" description="Vehicles" url="~/SVehicles.aspx">
+			<siteMapNode title="Add new vehicles" description="Add new vehicles" url="~/SVehicleAdd.aspx" />
+		</siteMapNode>
+		<siteMapNode title="Human Resources" description="Customer and Staff" url="~/HR.aspx">
+			<siteMapNode title="Customer" description="Customer" url="~/SCustomer.aspx" />
+			<siteMapNode title="Add Staff" description="Add Staff" url="~/StaffReg.aspx" />
+			<siteMapNode title="View Staff" description="View Staff" url="~/SStaff.aspx" />
+		</siteMapNode>
+		<siteMapNode title="View Book Record" description="Book record" url="~/BookRecord.aspx">
+		</siteMapNode>
+	</siteMapNode>
+</siteMap>
