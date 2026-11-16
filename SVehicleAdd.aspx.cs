@@ -1,30 +1,39 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
-using System.Text;
-using System.IO;
+using System.Globalization;
+using System.Web.UI;
 
 namespace CarDealership
 {
-    public partial class SVehicleAdd : System.Web.UI.Page
+    public partial class SVehicleAdd : Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-                    con.Open();
-                    SqlCommand cmd = con.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "insert into [dbo].[CarLists] values ('" + txtCID.Text + "','" + txtCBrand.Text + "','" + txtCModel.Text + "','" + DDLCType.Text + "','" + txtCEngine.Text + "','" + txtCCountry.Text + "','" + txtCPrice.Text + "')";
-                    cmd.ExecuteNonQuery();
-                    con.Close();
+            decimal price;
+            if (!Decimal.TryParse(txtCPrice.Text, NumberStyles.Number, CultureInfo.CurrentCulture, out price) || price < 0)
+            {
+                status.Text = "Enter a valid non-negative price.";
+                return;
+            }
 
-                    status.Text = "Record added Successfully!"; 
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            using (SqlCommand command = new SqlCommand("INSERT INTO [dbo].[CarLists] VALUES (@cid, @brand, @model, @type, @engine, @country, @price)", connection))
+            {
+                command.Parameters.Add("@cid", SqlDbType.NVarChar, 50).Value = txtCID.Text.Trim();
+                command.Parameters.Add("@brand", SqlDbType.NVarChar, 100).Value = txtCBrand.Text.Trim();
+                command.Parameters.Add("@model", SqlDbType.NVarChar, 100).Value = txtCModel.Text.Trim();
+                command.Parameters.Add("@type", SqlDbType.NVarChar, 50).Value = DDLCType.SelectedValue;
+                command.Parameters.Add("@engine", SqlDbType.NVarChar, 100).Value = txtCEngine.Text.Trim();
+                command.Parameters.Add("@country", SqlDbType.NVarChar, 100).Value = txtCCountry.Text.Trim();
+                command.Parameters.Add("@price", SqlDbType.Decimal).Value = price;
+                command.Parameters["@price"].Precision = 18;
+                command.Parameters["@price"].Scale = 2;
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+
+            status.Text = "Vehicle record added successfully.";
         }
     }
 }

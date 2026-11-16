@@ -1,72 +1,91 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
-using System.Text;
+using System.Web;
+using System.Web.UI;
 
 namespace CarDealership
 {
-    public partial class BookCar : System.Web.UI.Page
+    public partial class BookCar : Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
-
         protected void Page_Load(object sender, EventArgs e)
         {
-            int length = 6;
-            StringBuilder str_build = new StringBuilder();
-            Random random = new Random();
-            char sale;
+            if (IsPostBack) return;
 
-            for (int i = 0; i < length; i++)
+            string carId = Request.QueryString["cid"];
+            if (String.IsNullOrWhiteSpace(carId))
             {
-                double flt = random.NextDouble();
-                int shift = Convert.ToInt32(Math.Floor(25 * flt));
-                sale = Convert.ToChar(shift + 65);
-                str_build.Append(sale);
+                Response.Redirect("BuyCar.aspx");
+                return;
             }
-            lblSalesID.Text = str_build.ToString();
 
-
-            if (!Page.IsPostBack)
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            using (SqlCommand command = new SqlCommand("SELECT [brand], [model], [price] FROM [dbo].[CarLists] WHERE [cid] = @cid", connection))
             {
-                var carID = Request.QueryString["cid"];
-
-                string sqlquery = "select [brand],[model],[price] from [dbo].[CarLists] where cid='" + carID + "'";
-                SqlCommand sqlcomm = new SqlCommand(sqlquery, con);
-
-                con.Open();
-
-                SqlDataReader reader = sqlcomm.ExecuteReader();
-                if (reader.HasRows)
+                command.Parameters.Add("@cid", SqlDbType.NVarChar, 50).Value = carId;
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-                    while (reader.Read())
+                    if (!reader.Read())
                     {
-                        lblCarBrand.Text = reader.GetString(0);
-                        lblCarModel.Text = reader.GetString(1);
-                        lblCarPrice.Text = reader.GetValue(2).ToString();
+                        Response.Redirect("BuyCar.aspx");
+                        return;
                     }
-                }
-                con.Close();
 
-                lblBuyer.Text = Session["username"].ToString();
+                    lblCarBrand.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["brand"]));
+                    lblCarModel.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["model"]));
+                    lblCarPrice.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["price"]));
+                }
             }
 
+            lblSalesID.Text = Guid.NewGuid().ToString("N").Substring(0, 6).ToUpperInvariant();
+            lblBuyer.Text = HttpUtility.HtmlEncode(Convert.ToString(Session["username"]));
         }
+
         protected void btnYes_Click(object sender, EventArgs e)
         {
-            con.Open();
-            SqlCommand cmd = con.CreateCommand();
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "insert into Sale values ('"+ lblSalesID.Text+ "','" + lblCarBrand.Text + "','" + lblCarModel.Text + "','" + lblCarPrice.Text + "','" + lblBuyer.Text+ "')";
-            cmd.ExecuteNonQuery();
-            con.Close();
+            string buyer = Convert.ToString(Session["username"]);
+            string carId = Request.QueryString["cid"];
+            if (String.IsNullOrWhiteSpace(buyer) || String.IsNullOrWhiteSpace(carId))
+            {
+                Response.Redirect("CustLogin.aspx");
+                return;
+            }
 
-            status.Text = "Car is booked! Refer to our salesperson for more information";
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            {
+                connection.Open();
+                string brand;
+                string model;
+                object price;
+                using (SqlCommand car = new SqlCommand("SELECT [brand], [model], [price] FROM [dbo].[CarLists] WHERE [cid] = @cid", connection))
+                {
+                    car.Parameters.Add("@cid", SqlDbType.NVarChar, 50).Value = carId;
+                    using (SqlDataReader reader = car.ExecuteReader())
+                    {
+                        if (!reader.Read())
+                        {
+                            status.Text = "This vehicle is no longer available.";
+                            return;
+                        }
+                        brand = Convert.ToString(reader["brand"]);
+                        model = Convert.ToString(reader["model"]);
+                        price = reader["price"];
+                    }
+                }
+
+                using (SqlCommand booking = new SqlCommand("INSERT INTO [dbo].[Sale] VALUES (@saleId, @brand, @model, @price, @buyer)", connection))
+                {
+                    booking.Parameters.Add("@saleId", SqlDbType.NVarChar, 6).Value = Guid.NewGuid().ToString("N").Substring(0, 6).ToUpperInvariant();
+                    booking.Parameters.Add("@brand", SqlDbType.NVarChar, 100).Value = brand;
+                    booking.Parameters.Add("@model", SqlDbType.NVarChar, 100).Value = model;
+                    booking.Parameters.AddWithValue("@price", price);
+                    booking.Parameters.Add("@buyer", SqlDbType.NVarChar, 100).Value = buyer;
+                    booking.ExecuteNonQuery();
+                }
+            }
+
+            status.Text = "Car is booked. Please refer to our salesperson for more information.";
         }
 
         protected void Button2_Click(object sender, EventArgs e)

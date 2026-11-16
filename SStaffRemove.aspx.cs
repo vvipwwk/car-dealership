@@ -13,18 +13,24 @@ namespace CarDealership
 {
     public partial class SStaffRemove : System.Web.UI.Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
         protected void btnYes_Click(object sender, EventArgs e)
         {
-            var staffID = Request.QueryString["staffid"];
-            con.Open();
-            SqlCommand cmd = con.CreateCommand();
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "delete from [dbo].[Staff] where [StaffID] = '" + staffID + "'";
-            cmd.ExecuteNonQuery();
-            con.Close();
+            string staffId = Request.QueryString["staffid"];
+            if (String.IsNullOrWhiteSpace(staffId))
+            {
+                status.Text = "Invalid staff selection.";
+                return;
+            }
 
-            status.Text = "Record remove successfully!";
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            using (SqlCommand command = new SqlCommand("DELETE FROM [dbo].[Staff] WHERE [StaffID] = @staffId", connection))
+            {
+                command.Parameters.Add("@staffId", SqlDbType.NVarChar, 50).Value = staffId;
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+
+            status.Text = "Staff record removed successfully.";
         }
 
         protected void btnNo_Click(object sender, EventArgs e)

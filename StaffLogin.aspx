@@ -68,7 +68,7 @@
                 </tr>
                 <tr>
                     <td class="auto-style8" colspan="2">
-                        <asp:CheckBox ID="CBRmbr" runat="server" Text="Remember Me" />
+                        <asp:CheckBox ID="CBRmbr" runat="server" Text="Remember staff ID" />
                     </td>
                     <td class="auto-style8">
                         &nbsp;</td>

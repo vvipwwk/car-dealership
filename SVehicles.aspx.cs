@@ -13,7 +13,7 @@ namespace CarDealership
 {
     public partial class SVehicles : System.Web.UI.Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
+        SqlConnection con = new SqlConnection(DatabaseConnection.GetConnectionString());
         protected void Page_Load(object sender, EventArgs e)
         {
             //vehicle lists table display
@@ -48,13 +48,14 @@ namespace CarDealership
                     {
                         sb.Append("<th>");
                         carID = dr.Field<string>(0);
-                        sb.Append(dr[dc.ColumnName].ToString());
+                        sb.Append(HttpUtility.HtmlEncode(dr[dc.ColumnName].ToString()));
                         sb.Append("</th>");
                     }
                     sb.Append("<th>");
-                    sb.Append("<a href = 'SDetails.aspx?cid=" + carID + "'><button type = 'button'>Add Details</button></a>");
-                    sb.Append("<a href = 'SVehicleDetailEdit.aspx?cid=" + carID + "'><button type = 'button'>Edit Details</button></a>");
-                    sb.Append("<a href = 'SVehicleRemove.aspx?cid=" + carID + "'><button type = 'button'>Remove</button></a>");
+                    string encodedCarId = HttpUtility.UrlEncode(carID);
+                    sb.Append("<a href = 'SDetails.aspx?cid=" + encodedCarId + "'><button type = 'button'>Add Details</button></a>");
+                    sb.Append("<a href = 'SVehicleDetailEdit.aspx?cid=" + encodedCarId + "'><button type = 'button'>Edit Details</button></a>");
+                    sb.Append("<a href = 'SVehicleRemove.aspx?cid=" + encodedCarId + "'><button type = 'button'>Remove</button></a>");
                     sb.Append("</th>");
                     sb.Append("</tr>");
                 }

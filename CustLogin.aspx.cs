@@ -1,74 +1,99 @@
 using System;
-using System.Configuration;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
-using System.Web.SessionState;
+using System.Web;
+using System.Web.UI;
 
 namespace CarDealership
 {
-    public partial class CustLogin : System.Web.UI.Page
+    public partial class CustLogin : Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
-
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!IsPostBack)
-            {
-                if (Request.Cookies["username"] != null && Request.Cookies["password"] != null)
-                {
-                    txtUName.Text = Request.Cookies["username"].Value;
-                    txtPass.Attributes["value"] = Request.Cookies["password"].Value;
-                }
-            }
+            if (!IsPostBack && Request.Cookies["username"] != null)
+                txtUName.Text = Request.Cookies["username"].Value;
+
+            ExpireCookie("password"); // Remove cookies created by the old plain-text remember-me flow.
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            try 
+            if (!Page.IsValid) return;
+
+            try
             {
-                con.Open();
-                SqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "select [username], [password] from [dbo].[Customer] where [username] = '"+txtUName.Text+"' and [password] = '"+txtPass.Text+"'";
-                SqlDataReader sdr = cmd.ExecuteReader(); 
-                
-                if(sdr.Read())
+                string storedPassword = null;
+                using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+                using (SqlCommand command = new SqlCommand("SELECT [password] FROM [dbo].[Customer] WHERE [username] = @username", connection))
                 {
-                    if (CBRmbr.Checked)
+                    command.Parameters.Add("@username", SqlDbType.NVarChar, 100).Value = txtUName.Text.Trim();
+                    connection.Open();
+                    object value = command.ExecuteScalar();
+                    if (value != null && value != DBNull.Value)
+                        storedPassword = Convert.ToString(value);
+
+                    bool needsUpgrade;
+                    if (!PasswordHasher.Verify(storedPassword, txtPass.Text, out needsUpgrade))
                     {
-                        Response.Cookies["username"].Value = txtUName.Text;
-                        Response.Cookies["password"].Value = txtPass.Text;
-                        Response.Cookies["username"].Expires = DateTime.Now.AddMinutes(1);
-                        Response.Cookies["password"].Expires = DateTime.Now.AddMinutes(1);
+                        ShowMessage("Login details are incorrect. Please try again.");
+                        return;
                     }
-                    else
+
+                    if (needsUpgrade)
                     {
-                        Response.Cookies["username"].Expires = DateTime.Now.AddMinutes(-1);
-                        Response.Cookies["password"].Expires = DateTime.Now.AddMinutes(-1);
+                        using (SqlCommand upgrade = new SqlCommand("UPDATE [dbo].[Customer] SET [password] = @password WHERE [username] = @username", connection))
+                        {
+                            upgrade.Parameters.Add("@password", SqlDbType.NVarChar, 200).Value = PasswordHasher.Hash(txtPass.Text);
+                            upgrade.Parameters.Add("@username", SqlDbType.NVarChar, 100).Value = txtUName.Text.Trim();
+                            upgrade.ExecuteNonQuery();
+                        }
                     }
-                    
-                    Session["username"] = txtUName.Text;
-                    Response.Redirect("CustHome.aspx");
-                    txtUName.Text = "";
-                    txtPass.Text = "";
                 }
-                else
-                {
-                    Response.Write("<script>alert('Error login information, Please try again!')</script>");
-                    txtUName.Text = "";
-                    txtPass.Text = "";
-                }
-                con.Close();
+
+                Session["username"] = txtUName.Text.Trim();
+                SaveUsernameCookie(txtUName.Text.Trim());
+                Response.Redirect("CustHome.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
-            catch 
+            catch
             {
-                Response.Write("SQL Error");
+                ShowMessage("We could not sign you in right now. Please try again later.");
             }
+        }
+
+        private void SaveUsernameCookie(string username)
+        {
+            if (CBRmbr.Checked)
+            {
+                HttpCookie cookie = new HttpCookie("username", username);
+                cookie.Expires = DateTime.UtcNow.AddDays(30);
+                cookie.HttpOnly = true;
+                cookie.Secure = Request.IsSecureConnection;
+                cookie.Path = "/";
+                cookie.SameSite = SameSiteMode.Lax;
+                Response.Cookies.Add(cookie);
+            }
+            else
+            {
+                ExpireCookie("username");
+            }
+        }
+
+        private void ExpireCookie(string name)
+        {
+            HttpCookie cookie = new HttpCookie(name, String.Empty);
+            cookie.Expires = DateTime.UtcNow.AddDays(-1);
+            cookie.HttpOnly = true;
+            cookie.Secure = Request.IsSecureConnection;
+            cookie.Path = "/";
+            cookie.SameSite = SameSiteMode.Lax;
+            Response.Cookies.Add(cookie);
+        }
+
+        private void ShowMessage(string message)
+        {
+            string encoded = HttpUtility.JavaScriptStringEncode(message);
+            ClientScript.RegisterStartupScript(GetType(), "loginMessage", "alert('" + encoded + "');", true);
         }
 
         protected void btnHome_Click(object sender, EventArgs e)

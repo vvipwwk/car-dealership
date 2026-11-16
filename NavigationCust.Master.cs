@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -19,14 +19,17 @@ namespace CarDealership
             }
             else
             {
-                lblusername.Text = Session["username"].ToString();
+                lblusername.Text = HttpUtility.HtmlEncode(Session["username"].ToString());
             }
             
         }
 
         protected void btnLogOut_Click(object sender, EventArgs e)
         {
-            Response.Redirect("CustLogin.aspx");
+            Session.Clear();
+            Session.Abandon();
+            Response.Redirect("CustLogin.aspx", false);
+            Context.ApplicationInstance.CompleteRequest();
         }
     }
 }

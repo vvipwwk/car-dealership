@@ -1,76 +1,72 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
-using System.Text;
 using System.IO;
+using System.Web;
+using System.Web.UI;
 
 namespace CarDealership
 {
-    public partial class SDetails : System.Web.UI.Page
+    public partial class SDetails : Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
-
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Page.IsPostBack)
+            if (IsPostBack) return;
+
+            string carId = Request.QueryString["cid"];
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            using (SqlCommand command = new SqlCommand("SELECT [cid], [brand], [model] FROM [dbo].[CarLists] WHERE [cid] = @cid", connection))
             {
-                var carID = Request.QueryString["cid"];
-                string sqlquery = "select [cid],[brand],[model] from [dbo].[CarLists] where cid ='" + carID + "'";
-                SqlCommand sqlcomm = new SqlCommand(sqlquery, con);
-
-                con.Open();
-
-                SqlDataReader reader = sqlcomm.ExecuteReader();
-                if (reader.HasRows)
+                command.Parameters.Add("@cid", SqlDbType.NVarChar, 50).Value = carId ?? String.Empty;
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-
-                    while (reader.Read())
+                    if (!reader.Read())
                     {
-                        lblCID.Text = reader.GetString(0);
-                        lblCBrand.Text = reader.GetString(1);
-                        lblCModel.Text = reader.GetString(2);
+                        Response.Redirect("SVehicles.aspx");
+                        return;
                     }
+
+                    lblCID.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["cid"]));
+                    lblCBrand.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["brand"]));
+                    lblCModel.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["model"]));
                 }
-                con.Close();
             }
         }
 
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
-            string path = Server.MapPath("img/");
-
-            if (imgUpload.HasFile)
+            if (!imgUpload.HasFile)
             {
-                string ext = Path.GetExtension(imgUpload.FileName);
-                if (ext == ".jpg" || ext == ".png")
-                {
-                    imgUpload.SaveAs(path + imgUpload.FileName);
-                    string name = "img/" + imgUpload.FileName;
-
-                    con.Open();
-                    SqlCommand cmd = con.CreateCommand();
-                    cmd.CommandType = CommandType.Text;
-                    cmd.CommandText = "insert into [dbo].[CarDetail] values ('" + txtCDID.Text + "','" + lblCID.Text + "','" + lblCBrand.Text + "','" + lblCModel.Text + "','" + txtCDesc.Text + "','" + name + "')";
-                    cmd.ExecuteNonQuery();
-                    con.Close();
-
-                    status.Text = "Successful!";
-                }
-                else
-                {
-                    status.Text = "Only .jpg and .png files is allowed!";
-                }
+                status.Text = "Choose a vehicle image to upload.";
+                return;
             }
-            else
+
+            string extension = Path.GetExtension(imgUpload.FileName).ToLowerInvariant();
+            if ((extension != ".jpg" && extension != ".png") || imgUpload.PostedFile.ContentLength > 5 * 1024 * 1024)
             {
-                status.Text = "Please enter all information!";
+                status.Text = "Upload a JPG or PNG image no larger than 5 MB.";
+                return;
             }
+
+            string fileName = Guid.NewGuid().ToString("N") + extension;
+            string relativePath = "img/" + fileName;
+            imgUpload.SaveAs(Server.MapPath(relativePath));
+
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            using (SqlCommand command = new SqlCommand("INSERT INTO [dbo].[CarDetail] VALUES (@did, @cid, @brand, @model, @description, @image)", connection))
+            {
+                command.Parameters.Add("@did", SqlDbType.NVarChar, 50).Value = txtCDID.Text.Trim();
+                command.Parameters.Add("@cid", SqlDbType.NVarChar, 50).Value = HttpUtility.HtmlDecode(lblCID.Text);
+                command.Parameters.Add("@brand", SqlDbType.NVarChar, 100).Value = HttpUtility.HtmlDecode(lblCBrand.Text);
+                command.Parameters.Add("@model", SqlDbType.NVarChar, 100).Value = HttpUtility.HtmlDecode(lblCModel.Text);
+                command.Parameters.Add("@description", SqlDbType.NVarChar, -1).Value = txtCDesc.Text.Trim();
+                command.Parameters.Add("@image", SqlDbType.NVarChar, 260).Value = relativePath;
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+
+            status.Text = "Vehicle details added successfully.";
         }
     }
 }

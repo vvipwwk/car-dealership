@@ -10,7 +10,7 @@ namespace CarDealership
 {
     public partial class BuyCar : Page
     {
-        private readonly string connectionString = ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString;
+        private readonly string connectionString = DatabaseConnection.GetConnectionString();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -31,8 +31,10 @@ namespace CarDealership
                 cards.Append("<article class=\"vehicle-card\">");
                 if (String.IsNullOrWhiteSpace(image))
                     cards.Append("<div class=\"vehicle-art\" aria-hidden=\"true\"></div>");
-                else
+                else if (IsSafeImagePath(image))
                     cards.Append("<div class=\"vehicle-photo\"><img src=\"").Append(HttpUtility.HtmlAttributeEncode(image)).Append("\" alt=\"").Append(make).Append(" ").Append(model).Append("\" /></div>");
+                else
+                    cards.Append("<div class=\"vehicle-art\" aria-hidden=\"true\"></div>");
                 cards.Append("<div class=\"vehicle-card-body\">");
                 cards.Append("<h2>").Append(make).Append(" ").Append(model).Append("</h2>");
                 cards.Append("<div class=\"vehicle-meta\">").Append(HttpUtility.HtmlEncode(Convert.ToString(vehicle["type"]))).Append(" · ").Append(HttpUtility.HtmlEncode(Convert.ToString(vehicle["engine"])));
@@ -44,6 +46,17 @@ namespace CarDealership
             if (vehicles.Rows.Count == 0)
                 cards = new StringBuilder("<p class=\"page-intro\">There are no vehicles available to book right now.</p>");
             saledb.Controls.Add(new LiteralControl(cards.ToString()));
+        }
+
+        private static bool IsSafeImagePath(string imagePath)
+        {
+            if (String.IsNullOrWhiteSpace(imagePath) || !imagePath.StartsWith("img/", StringComparison.OrdinalIgnoreCase))
+                return false;
+
+            string fileName = System.IO.Path.GetFileName(imagePath);
+            string extension = System.IO.Path.GetExtension(imagePath);
+            return String.Equals(imagePath.Substring(4), fileName, StringComparison.Ordinal) &&
+                (String.Equals(extension, ".jpg", StringComparison.OrdinalIgnoreCase) || String.Equals(extension, ".png", StringComparison.OrdinalIgnoreCase));
         }
     }
 }

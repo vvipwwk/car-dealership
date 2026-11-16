@@ -100,7 +100,7 @@
                 <asp:TextBox ID="txtPassword" runat="server" TextMode="Password" ValidationGroup="validate"></asp:TextBox>
             </td>
             <td __designer:mapid="25" class="auto-style9">
-                <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ControlToValidate="txtPassword" ErrorMessage="Password word count should be at least 8 characters and above." ForeColor="Red" ValidationGroup="validate"></asp:RegularExpressionValidator>
+                <asp:RegularExpressionValidator ID="RegularExpressionValidator3" runat="server" ControlToValidate="txtPassword" ErrorMessage="Password must be blank or at least 12 characters." ForeColor="Red" ValidationExpression=".{12,}" ValidationGroup="validate"></asp:RegularExpressionValidator>
             </td>
         </tr>
         <tr __designer:mapid="26">

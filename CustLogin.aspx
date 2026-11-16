@@ -65,7 +65,7 @@
                 </tr>
                 <tr>
                     <td class="auto-style9" colspan="2">
-                        <asp:CheckBox ID="CBRmbr" runat="server" Text="Remember Me" />
+                        <asp:CheckBox ID="CBRmbr" runat="server" Text="Remember username" />
                     </td>
                     <td class="auto-style9">
                         &nbsp;</td>

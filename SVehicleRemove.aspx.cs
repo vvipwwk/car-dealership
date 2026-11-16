@@ -1,38 +1,51 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
-using System.Text;
+using System.Web.UI;
 
 namespace CarDealership
 {
-    public partial class SVehicleRemove : System.Web.UI.Page
+    public partial class SVehicleRemove : Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
-
         protected void btnYes_Click(object sender, EventArgs e)
         {
-                var carID = Request.QueryString["cid"];
-                con.Open();
-                SqlCommand cmd = con.CreateCommand();
-                cmd.CommandType = CommandType.Text;
-                cmd.CommandText = "delete from [dbo].[CarDetail] where [cid] = '" + carID + "'";
-                cmd.ExecuteNonQuery();
-                con.Close();
+            string carId = Request.QueryString["cid"];
+            if (String.IsNullOrWhiteSpace(carId))
+            {
+                status.Text = "Invalid vehicle selection.";
+                return;
+            }
 
-                con.Open();
-                SqlCommand cmd1 = con.CreateCommand();
-                cmd1.CommandType = CommandType.Text;
-                cmd1.CommandText = "delete from [dbo].[CarLists] where [cid] = '" + carID + "'";
-                cmd1.ExecuteNonQuery();
-                con.Close();
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            {
+                connection.Open();
+                using (SqlTransaction transaction = connection.BeginTransaction())
+                {
+                    try
+                    {
+                        using (SqlCommand detail = new SqlCommand("DELETE FROM [dbo].[CarDetail] WHERE [cid] = @cid", connection, transaction))
+                        {
+                            detail.Parameters.Add("@cid", SqlDbType.NVarChar, 50).Value = carId;
+                            detail.ExecuteNonQuery();
+                        }
 
-            status.Text = "Record remove successfully!";
+                        using (SqlCommand vehicle = new SqlCommand("DELETE FROM [dbo].[CarLists] WHERE [cid] = @cid", connection, transaction))
+                        {
+                            vehicle.Parameters.Add("@cid", SqlDbType.NVarChar, 50).Value = carId;
+                            vehicle.ExecuteNonQuery();
+                        }
+
+                        transaction.Commit();
+                    }
+                    catch
+                    {
+                        transaction.Rollback();
+                        throw;
+                    }
+                }
+            }
+
+            status.Text = "Vehicle record removed successfully.";
         }
 
         protected void btnNo_Click(object sender, EventArgs e)

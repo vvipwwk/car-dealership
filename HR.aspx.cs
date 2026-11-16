@@ -13,14 +13,14 @@ namespace CarDealership
 {
     public partial class HR : System.Web.UI.Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
+        SqlConnection con = new SqlConnection(DatabaseConnection.GetConnectionString());
         protected void Page_Load(object sender, EventArgs e)
         {
             //reg customer table display
 
             if (!Page.IsPostBack)
             {
-                string sqlquery = "select * from [dbo].[Customer]";
+                string sqlquery = "select [uid], [username], [fullname], [DOB], [sex], [contactno], [email] from [dbo].[Customer]";
                 SqlCommand sqlconn = new SqlCommand(sqlquery, con);
                 con.Open();
                 SqlDataAdapter sda = new SqlDataAdapter(sqlconn);
@@ -46,7 +46,7 @@ namespace CarDealership
                     foreach (DataColumn dc in dt.Columns)
                     {
                         sb.Append("<th>");
-                        sb.Append(dr[dc.ColumnName].ToString());
+                        sb.Append(HttpUtility.HtmlEncode(dr[dc.ColumnName].ToString()));
                         sb.Append("</th>");
                     }
                     sb.Append("</tr>");
@@ -58,7 +58,7 @@ namespace CarDealership
 
                 //staff table display
 
-                string sqlquery2 = "select * from [dbo].[Staff]";
+                string sqlquery2 = "select [StaffID], [staffname], [fullname], [DOB], [sex], [position], [contactno], [email] from [dbo].[Staff]";
                 SqlCommand sqlconn2 = new SqlCommand(sqlquery2, con);
                 con.Open();
                 SqlDataAdapter sda2 = new SqlDataAdapter(sqlconn2);
@@ -84,7 +84,7 @@ namespace CarDealership
                     foreach (DataColumn dc in dt2.Columns)
                     {
                         sb2.Append("<th>");
-                        sb2.Append(dr[dc.ColumnName].ToString());
+                        sb2.Append(HttpUtility.HtmlEncode(dr[dc.ColumnName].ToString()));
                         sb2.Append("</th>");
                     }
                     sb2.Append("</tr>");

@@ -1,71 +1,73 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
-using System.Text;
+using System.IO;
+using System.Web;
+using System.Web.UI;
 
 namespace CarDealership
 {
-    public partial class CVehicleDetails : System.Web.UI.Page
+    public partial class CVehicleDetails : Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
         protected void Page_Load(object sender, EventArgs e)
         {
             Image1.Visible = false;
             Label1.Visible = false;
             lblDesc.Visible = false;
 
-            if (!Page.IsPostBack)
+            if (IsPostBack) return;
+
+            string carId = Request.QueryString["cid"];
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            using (SqlCommand command = new SqlCommand("SELECT [brand], [model], [type], [engine], [country], [price] FROM [dbo].[CarLists] WHERE [cid] = @cid", connection))
             {
-                var carID = Request.QueryString["cid"];
-                string sqlquery = "select brand, model, type, engine, country, price from CarLists where cid = '"+carID+"'";
-                SqlCommand sqlcomm = new SqlCommand(sqlquery, con);
-                con.Open();
-
-                SqlDataReader reader = sqlcomm.ExecuteReader();
-                if (reader.HasRows)
+                command.Parameters.Add("@cid", SqlDbType.NVarChar, 50).Value = carId ?? String.Empty;
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-
-                    while (reader.Read())
+                    if (!reader.Read())
                     {
-                        lblCarBrand.Text = reader.GetString(0);
-                        lblCarName.Text = reader.GetString(1);
-                        lblType.Text = reader.GetString(2);
-                        lblEngine.Text = reader.GetString(3);
-                        lblCountry.Text = reader.GetString(4);
-                        lblPrice.Text = reader.GetValue(5).ToString();
+                        Response.Redirect("CVehicles.aspx");
+                        return;
                     }
+
+                    lblCarBrand.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["brand"]));
+                    lblCarName.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["model"]));
+                    lblType.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["type"]));
+                    lblEngine.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["engine"]));
+                    lblCountry.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["country"]));
+                    lblPrice.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["price"]));
                 }
-                con.Close();
             }
         }
 
         protected void Button1_Click(object sender, EventArgs e)
         {
-                var carID = Request.QueryString["cid"];
-                string sqlquery = "select img, description from CarDetail where cid = '" + carID + "'";
-                SqlCommand sqlcomm = new SqlCommand(sqlquery, con);
-                con.Open();
-
-                SqlDataReader reader = sqlcomm.ExecuteReader();
-                if (reader.HasRows)
+            string carId = Request.QueryString["cid"];
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            using (SqlCommand command = new SqlCommand("SELECT [img], [description] FROM [dbo].[CarDetail] WHERE [cid] = @cid", connection))
+            {
+                command.Parameters.Add("@cid", SqlDbType.NVarChar, 50).Value = carId ?? String.Empty;
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
+                    if (!reader.Read()) return;
 
-                    while (reader.Read())
+                    string imagePath = Convert.ToString(reader["img"]);
+                    string extension = Path.GetExtension(imagePath);
+                    string fileName = Path.GetFileName(imagePath);
+                    if (!String.IsNullOrEmpty(imagePath) && imagePath.StartsWith("img/", StringComparison.OrdinalIgnoreCase) &&
+                        String.Equals(imagePath.Substring(4), fileName, StringComparison.Ordinal) &&
+                        (String.Equals(extension, ".jpg", StringComparison.OrdinalIgnoreCase) || String.Equals(extension, ".png", StringComparison.OrdinalIgnoreCase)))
                     {
+                        Image1.ImageUrl = "~/" + imagePath;
                         Image1.Visible = true;
-                        Label1.Visible = true;
-                        lblDesc.Visible = true;
-                        Image1.ImageUrl = reader.GetString(0);
-                        lblDesc.Text = reader.GetString(1);
                     }
+                    Label1.Visible = true;
+                    lblDesc.Visible = true;
+                    lblDesc.Text = HttpUtility.HtmlEncode(Convert.ToString(reader["description"]));
                 }
-                con.Close();
+            }
         }
     }
 }

@@ -1,82 +1,93 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using System.Data;
 using System.Data.SqlClient;
-using System.Configuration;
-using System.Text;
+using System.Globalization;
+using System.Web.UI;
 
 namespace CarDealership
 {
-    public partial class SCustomerEdit : System.Web.UI.Page
+    public partial class SCustomerEdit : Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
-
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (!Page.IsPostBack)
+            if (IsPostBack) return;
+
+            int userId;
+            if (!Int32.TryParse(Request.QueryString["uid"], out userId))
             {
-                var uID = Request.QueryString["uid"];
-                string sqlquery = "select * from [dbo].[Customer] where uid='" + uID + "'";
-                SqlCommand sqlcomm = new SqlCommand(sqlquery, con);
+                Response.Redirect("SCustomer.aspx");
+                return;
+            }
 
-                con.Open();
-
-                SqlDataReader reader = sqlcomm.ExecuteReader();
-                if (reader.HasRows)
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            using (SqlCommand command = new SqlCommand("SELECT [uid], [username], [fullname], [DOB], [sex], [contactno], [email] FROM [dbo].[Customer] WHERE [uid] = @uid", connection))
+            {
+                command.Parameters.Add("@uid", SqlDbType.Int).Value = userId;
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
                 {
-
-                    while (reader.Read())
+                    if (!reader.Read())
                     {
-
-                        lblUID.Text = reader.GetValue(0).ToString();
-                        txtUserName.Text = reader.GetString(1);
-                        txtPassword.Text = reader.GetString(2);
-                        txtFullName.Text = reader.GetString(3);
-                        txtDateofBirth.Text = reader.GetDateTime(4).ToString("yyyy-MM-dd");
-                        string sex = reader.GetString(5);
-                        if (sex == "Male")
-                        {
-                            RBMale.Checked = true;
-
-                        }
-                        else
-                        {
-                            RBFemale.Checked = true;
-                        }
-
-                        txtContactNo.Text = reader.GetString(6);
-                        txtEmail.Text = reader.GetString(7);
+                        Response.Redirect("SCustomer.aspx");
+                        return;
                     }
+
+                    lblUID.Text = reader["uid"].ToString();
+                    txtUserName.Text = Convert.ToString(reader["username"]);
+                    txtPassword.Text = String.Empty;
+                    txtPassword.Attributes["placeholder"] = "Leave blank to keep current password";
+                    txtFullName.Text = Convert.ToString(reader["fullname"]);
+                    txtDateofBirth.Text = Convert.ToDateTime(reader["DOB"]).ToString("yyyy-MM-dd", CultureInfo.InvariantCulture);
+                    RBMale.Checked = String.Equals(Convert.ToString(reader["sex"]), "Male", StringComparison.OrdinalIgnoreCase);
+                    RBFemale.Checked = !RBMale.Checked;
+                    txtContactNo.Text = Convert.ToString(reader["contactno"]);
+                    txtEmail.Text = Convert.ToString(reader["email"]);
                 }
-                con.Close();
             }
         }
 
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
-            con.Open();
-            SqlCommand cmd = con.CreateCommand();
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "update [dbo].[Customer] set [username] = '" + txtUserName.Text + "',[password] = '" + txtPassword.Text + "',[fullname] = '" + txtFullName.Text + "',[DOB] = '" + txtDateofBirth.Text + "',[sex] = @sex,[contactno] = '" + txtContactNo.Text + "',[email] = '" + txtEmail.Text + "' where [uid] = '" + lblUID.Text + "'";
-            string gender = null;
-            if (RBMale.Checked == true)
+            if (!Page.IsValid) return;
+
+            if (!String.IsNullOrWhiteSpace(txtPassword.Text) && txtPassword.Text.Length < 12)
             {
-                gender = "Male";
-            }
-            else
-            {
-                gender = "Female";
+                Response.Write("<script>alert('A new password must be at least 12 characters.');</script>");
+                return;
             }
 
-            cmd.Parameters.AddWithValue("@sex", gender);
-            cmd.ExecuteNonQuery();
-            con.Close();
+            int userId;
+            DateTime dateOfBirth;
+            if (!Int32.TryParse(lblUID.Text, out userId) ||
+                !DateTime.TryParseExact(txtDateofBirth.Text, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out dateOfBirth))
+            {
+                Response.Write("<script>alert('Please enter valid customer details.');</script>");
+                return;
+            }
 
-            Response.Write("<script>alert('Record updated successfully!')</script>");
+            string sql = "UPDATE [dbo].[Customer] SET [username] = @username, [fullname] = @fullname, [DOB] = @dob, [sex] = @sex, [contactno] = @contactno, [email] = @email";
+            if (!String.IsNullOrWhiteSpace(txtPassword.Text))
+                sql += ", [password] = @password";
+            sql += " WHERE [uid] = @uid";
+
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            using (SqlCommand command = new SqlCommand(sql, connection))
+            {
+                command.Parameters.Add("@username", SqlDbType.NVarChar, 100).Value = txtUserName.Text.Trim();
+                command.Parameters.Add("@fullname", SqlDbType.NVarChar, 150).Value = txtFullName.Text.Trim();
+                command.Parameters.Add("@dob", SqlDbType.Date).Value = dateOfBirth;
+                command.Parameters.Add("@sex", SqlDbType.NVarChar, 20).Value = RBMale.Checked ? "Male" : "Female";
+                command.Parameters.Add("@contactno", SqlDbType.NVarChar, 40).Value = txtContactNo.Text.Trim();
+                command.Parameters.Add("@email", SqlDbType.NVarChar, 254).Value = txtEmail.Text.Trim();
+                command.Parameters.Add("@uid", SqlDbType.Int).Value = userId;
+                if (!String.IsNullOrWhiteSpace(txtPassword.Text))
+                    command.Parameters.Add("@password", SqlDbType.NVarChar, 200).Value = PasswordHasher.Hash(txtPassword.Text);
+
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+
+            Response.Write("<script>alert('Record updated successfully.');</script>");
         }
     }
 }

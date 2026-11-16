@@ -13,14 +13,14 @@ namespace CarDealership
 {
     public partial class SStaff : System.Web.UI.Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
+        SqlConnection con = new SqlConnection(DatabaseConnection.GetConnectionString());
         protected void Page_Load(object sender, EventArgs e)
         {
             //staff table display
 
             if (!Page.IsPostBack)
             {
-                string sqlquery = "select * from [dbo].[Staff]";
+                string sqlquery = "select [StaffID], [staffname], [fullname], [DOB], [sex], [position], [contactno], [email] from [dbo].[Staff]";
                 SqlCommand sqlconn = new SqlCommand(sqlquery, con);
                 con.Open();
                 SqlDataAdapter sda = new SqlDataAdapter(sqlconn);
@@ -48,12 +48,13 @@ namespace CarDealership
                     {
                         sb.Append("<th>");
                         staffID = dr.Field<string>(0);
-                        sb.Append(dr[dc.ColumnName].ToString());
+                        sb.Append(HttpUtility.HtmlEncode(dr[dc.ColumnName].ToString()));
                         sb.Append("</th>");
                     }
                     sb.Append("<th>");
-                    sb.Append("<a href = 'SStaffEdit.aspx?StaffID=" + staffID + "'><button type = 'button'>Edit</button></a>");
-                    sb.Append("<a href = 'SStaffRemove.aspx?StaffID=" + staffID + "'><button type = 'button'>Remove</button></a>");
+                    string encodedStaffId = HttpUtility.UrlEncode(staffID);
+                    sb.Append("<a href = 'SStaffEdit.aspx?StaffID=" + encodedStaffId + "'><button type = 'button'>Edit</button></a>");
+                    sb.Append("<a href = 'SStaffRemove.aspx?StaffID=" + encodedStaffId + "'><button type = 'button'>Remove</button></a>");
                     sb.Append("</th>");
                     sb.Append("</tr>");
                 }

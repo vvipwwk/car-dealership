@@ -13,7 +13,7 @@ namespace CarDealership
 {
     public partial class BookRecord : System.Web.UI.Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
+        SqlConnection con = new SqlConnection(DatabaseConnection.GetConnectionString());
         protected void Page_Load(object sender, EventArgs e)
         {
             //book record display
@@ -46,7 +46,7 @@ namespace CarDealership
                     foreach (DataColumn dc in dt.Columns)
                     {
                         sb.Append("<th>");
-                        sb.Append(dr[dc.ColumnName].ToString());
+                        sb.Append(HttpUtility.HtmlEncode(dr[dc.ColumnName].ToString()));
                         sb.Append("</th>");
                     }
                     sb.Append("</tr>");

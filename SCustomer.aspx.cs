@@ -13,14 +13,14 @@ namespace CarDealership
 {
     public partial class SCustomer : System.Web.UI.Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
+        SqlConnection con = new SqlConnection(DatabaseConnection.GetConnectionString());
         protected void Page_Load(object sender, EventArgs e)
         {
             //reg customer table display
 
             if (!Page.IsPostBack)
             {
-                string sqlquery = "select * from [dbo].[Customer]";
+                string sqlquery = "select [uid], [username], [fullname], [DOB], [sex], [contactno], [email] from [dbo].[Customer]";
                 SqlCommand sqlconn = new SqlCommand(sqlquery, con);
                 con.Open();
                 SqlDataAdapter sda = new SqlDataAdapter(sqlconn);
@@ -48,7 +48,7 @@ namespace CarDealership
                     {
                         sb.Append("<th>");
                         uID = dr.Field<int>(0);
-                        sb.Append(dr[dc.ColumnName].ToString());
+                        sb.Append(HttpUtility.HtmlEncode(dr[dc.ColumnName].ToString()));
                         sb.Append("</th>");
                     }
                     sb.Append("<th>");

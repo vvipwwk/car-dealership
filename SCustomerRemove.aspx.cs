@@ -13,18 +13,24 @@ namespace CarDealership
 {
     public partial class SCustomerRemove : System.Web.UI.Page
     {
-        SqlConnection con = new SqlConnection(ConfigurationManager.ConnectionStrings["CarDealerConnectionString"].ConnectionString);
         protected void btnYes_Click(object sender, EventArgs e)
         {
-            var uID = Request.QueryString["uid"];
-            con.Open();
-            SqlCommand cmd = con.CreateCommand();
-            cmd.CommandType = CommandType.Text;
-            cmd.CommandText = "delete from [dbo].[Customer] where [uid] = '" + uID + "'";
-            cmd.ExecuteNonQuery();
-            con.Close();
+            int userId;
+            if (!Int32.TryParse(Request.QueryString["uid"], out userId))
+            {
+                status.Text = "Invalid customer selection.";
+                return;
+            }
 
-            status.Text = "Record remove successfully!";
+            using (SqlConnection connection = new SqlConnection(DatabaseConnection.GetConnectionString()))
+            using (SqlCommand command = new SqlCommand("DELETE FROM [dbo].[Customer] WHERE [uid] = @uid", connection))
+            {
+                command.Parameters.Add("@uid", SqlDbType.Int).Value = userId;
+                connection.Open();
+                command.ExecuteNonQuery();
+            }
+
+            status.Text = "Customer record removed successfully.";
         }
         protected void btnNo_Click(object sender, EventArgs e)
         {
