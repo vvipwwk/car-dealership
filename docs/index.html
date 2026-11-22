@@ -617,11 +617,6 @@
       setVehicleAngle(order[(idx + delta + order.length) % order.length]);
 	}
 	  
-      const tb = document.getElementById('topbar');
-      if (tb) tb.classList.remove('mobile-open');
-      if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
-      render();
-    }
     function quickFilterBody(body) { state.filters.body = body; navigate('c-vehicles'); }
 
     function demoLogin(type) {
