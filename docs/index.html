@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ApexDrive Motors — Flagship Car Dealership</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%232563eb'/%3E%3Cstop offset='100%25' stop-color='%230ea5e9'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Cpath d='M14 40l4-11 9-3 7-7h12l7 7 5 4v10H14z' fill='%23ffffff' opacity='0.95'/%3E%3Ccircle cx='22' cy='42' r='5' fill='%230b1220'/%3E%3Ccircle cx='22' cy='42' r='2.2' fill='%23cbd5e1'/%3E%3Ccircle cx='44' cy='42' r='5' fill='%230b1220'/%3E%3Ccircle cx='44' cy='42' r='2.2' fill='%23cbd5e1'/%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    
+	.spotlight-car-anim,.spotlight-floor img{width:100%;height:100%;object-fit:cover;border-radius:12px}
+	:root{--bg:#f3f5fa;--surface:#fff;--surface-2:#f8fafc;--ink:#0b1220;--muted:#64748b;--line:#e2e8f0;--primary:#2563eb;--primary-soft:#eff6ff;--success:#059669;--success-soft:#ecfdf5;--warning:#d97706;--warning-soft:#fffbeb;--danger:#dc2626;--danger-soft:#fef2f2;--dark-nav:#070c17;--radius:16px;--shadow-sm:0 2px 6px rgba(15,23,42,.05);--shadow-md:0 16px 32px -8px rgba(15,23,42,.12);--shadow-lg:0 24px 48px -12px rgba(11,18,32,.22)}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;overflow-x:hidden}
+    h1,h2,h3,.brand,.car-price,.kpi-value{font-family:'Plus Jakarta Sans','Inter',system-ui,sans-serif}
+    button,input,select,textarea{font-family:inherit}
+    .mode-bar{background:#0f172a;color:#cbd5e1;font-size:.78rem;padding:7px 20px;display:flex;justify-content:center;align-items:center;gap:10px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.08)}
+    .mode-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+    .mode-dot.live{background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.28);animation:pulseDot 2s infinite}
+    .mode-dot.local{background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.28)}
+    @keyframes pulseDot{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.25);opacity:.75}}
+    .topbar{position:sticky;top:0;z-index:40;background:rgba(7,12,23,.92);backdrop-filter:blur(14px);color:#fff;border-bottom:1px solid rgba(255,255,255,.09);transition:box-shadow .25s ease}
+    .topbar.scrolled{box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .topbar-inner{max-width:1280px;margin:0 auto;padding:0 20px;min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:1.15rem;letter-spacing:-.02em;cursor:pointer}
+    .brand-icon{width:38px;height:38px;border-radius:11px;background:linear-gradient(135deg,#2563eb,#0ea5e9);display:grid;place-items:center;color:#fff;font-weight:800;box-shadow:0 6px 16px rgba(37,99,235,.35);transition:transform .25s ease}
+    .brand:hover .brand-icon{transform:rotate(-6deg) scale(1.06)}
+    .nav-links{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+    .nav-btn{background:transparent;border:none;color:#cbd5e1;padding:8px 13px;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;transition:all .2s ease;display:inline-flex;align-items:center;gap:6px}
+    .nav-btn:hover{background:rgba(255,255,255,.09);color:#fff;transform:translateY(-1px)}
+    .nav-btn.active{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;box-shadow:0 4px 12px rgba(37,99,235,.35)}
+    .pill-count{background:rgba(255,255,255,.2);color:#fff;padding:1px 6px;border-radius:999px;font-size:.72rem;font-weight:700}
+    .user-pill{display:flex;align-items:center;gap:10px;font-size:.85rem;flex-wrap:wrap}
+    .role-badge{padding:3px 10px;border-radius:999px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;background:rgba(37,99,235,.25);color:#93c5fd;border:1px solid rgba(147,197,253,.25)}
+    .role-badge.staff{background:rgba(16,185,129,.2);color:#6ee7b7;border-color:rgba(110,231,183,.25)}
+    .mobile-toggle{display:none;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);color:#fff;border-radius:9px;padding:7px 11px;cursor:pointer;font-size:1rem}
+    .container{max-width:1280px;margin:0 auto;padding:28px 20px 80px;min-height:calc(100vh - 165px)}
+    .view-enter{animation:viewFadeIn .35s cubic-bezier(.22,1,.36,1)}
+    @keyframes viewFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+    .reveal{opacity:1;transform:translateY(0);transition:opacity .5s ease,transform .5s ease}
+    .reveal.will-animate{opacity:0;transform:translateY(18px)}
+    .reveal.will-animate.visible{opacity:1;transform:translateY(0)}
+    .grid{display:grid;gap:22px}
+    .grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+    @media(max-width:960px){.grid-4,.grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:760px){.grid-4,.grid-3,.grid-2{grid-template-columns:1fr}.mobile-toggle{display:inline-flex}.nav-links,.user-pill{display:none;width:100%;padding-bottom:10px}.topbar.mobile-open .nav-links,.topbar.mobile-open .user-pill{display:flex}.topbar-inner{padding:12px 16px;flex-wrap:wrap}}
+    .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm);overflow:hidden}
+    .card-pad{padding:24px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 17px;border-radius:11px;font-size:.875rem;font-weight:600;border:1px solid transparent;cursor:pointer;transition:all .18s ease;white-space:nowrap}
+    .btn:active{transform:scale(.97)}
+    .btn-sm{padding:7px 12px;font-size:.8rem;border-radius:9px}
+    .btn-primary{background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;box-shadow:0 6px 16px rgba(37,99,235,.25)}
+    .btn-primary:hover{filter:brightness(1.06);transform:translateY(-1px)}
+    .btn-secondary{background:var(--surface);color:var(--ink);border-color:var(--line)}
+    .btn-secondary:hover{background:var(--surface-2);border-color:#cbd5e1;transform:translateY(-1px)}
+    .btn-success{background:linear-gradient(135deg,#059669,#047857);color:#fff;box-shadow:0 6px 16px rgba(5,150,105,.22)}
+    .btn-success:hover{filter:brightness(1.05);transform:translateY(-1px)}
+    .btn-danger{background:var(--danger-soft);color:var(--danger);border-color:#fecaca}
+    .btn-danger:hover{background:#fee2e2}
+    .btn-ghost{background:transparent;color:var(--muted)}
+    .btn-ghost:hover{background:var(--surface-2);color:var(--ink)}
+    .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+    .badge{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:.74rem;font-weight:700}
+    .badge-available,.badge-confirmed,.badge-active,.badge-completed{background:var(--success-soft);color:var(--success)}
+    .badge-reserved,.badge-pending{background:var(--warning-soft);color:var(--warning)}
+    .badge-sold,.badge-cancelled,.badge-inactive{background:var(--danger-soft);color:var(--danger)}
+    .badge-info{background:rgba(37,99,235,.2);color:#93c5fd;border:1px solid rgba(147,197,253,.28)}
+    .field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+    .field label{font-size:.82rem;font-weight:600;color:#334155}
+    .input,select.input,textarea.input{width:100%;padding:10px 13px;border:1px solid var(--line);border-radius:10px;font-size:.9rem;background:#fff;color:var(--ink);transition:border-color .15s,box-shadow .15s}
+    .input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(37,99,235,.14)}
+    input[type="range"]{accent-color:var(--primary);cursor:pointer}
+    .hero{position:relative;overflow:hidden;background:radial-gradient(circle at 82% 20%,rgba(37,99,235,.36),transparent 45%),radial-gradient(circle at 15% 85%,rgba(14,165,233,.18),transparent 40%),linear-gradient(135deg,#060a14 0%,#0d1629 55%,#111c34 100%);color:#fff;border-radius:24px;padding:44px 40px;display:grid;grid-template-columns:1.15fr 1fr;gap:36px;align-items:center;box-shadow:var(--shadow-lg);margin-bottom:28px;border:1px solid rgba(255,255,255,.08)}
+    @media(max-width:920px){.hero{grid-template-columns:1fr;padding:32px 22px}}
+    .hero h1{margin:0 0 14px;font-size:clamp(2rem,3.4vw,2.95rem);line-height:1.09;letter-spacing:-.03em}
+    .hero p{margin:0 0 24px;color:#cbd5e1;font-size:1.02rem;max-width:54ch}
+    .hero-stats{display:flex;gap:28px;flex-wrap:wrap;margin-top:28px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12)}
+    .hero-stat strong{display:block;font-size:1.45rem;font-weight:800}
+    .hero-stat span{font-size:.8rem;color:#94a3b8}
+    .spotlight-stage{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,.02) 100%);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:22px;backdrop-filter:blur(12px);transform-style:preserve-3d;transition:transform .2s ease-out}
+    .spotlight-floor{position:relative;height:170px;border-radius:14px;background:radial-gradient(ellipse at center bottom,rgba(59,130,246,.22),rgba(15,23,42,.5) 70%);display:grid;place-items:center;overflow:hidden;margin-bottom:16px;border:1px solid rgba(255,255,255,.07)}
+    .spotlight-floor::after{content:'';position:absolute;bottom:12px;width:72%;height:14px;background:radial-gradient(ellipse,rgba(255,255,255,.16),transparent 70%);border-radius:50%}
+    .spotlight-car-anim{animation:floatCar 4.2s ease-in-out infinite;z-index:2}
+    @keyframes floatCar{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+    .spotlight-progress{height:3px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-top:14px}
+    .spotlight-progress-fill{height:100%;background:linear-gradient(90deg,#3b82f6,#38bdf8);width:0%;transition:width .2s linear}
+    .category-strip{display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:28px}
+    .cat-pill{flex:1;min-width:135px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px;cursor:pointer;transition:all .2s ease;display:flex;align-items:center;justify-content:space-between;font-weight:700;font-size:.9rem;box-shadow:var(--shadow-sm)}
+    .cat-pill:hover{border-color:var(--primary);color:var(--primary);transform:translateY(-2px);box-shadow:var(--shadow-md)}
+    .cat-pill span{font-size:.76rem;color:var(--muted);font-weight:600;background:var(--surface-2);padding:2px 8px;border-radius:999px}
+    .trust-strip{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:34px 0 8px}
+    @media(max-width:900px){.trust-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:540px){.trust-strip{grid-template-columns:1fr}}
+    .trust-item{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:flex;gap:13px;align-items:flex-start;box-shadow:var(--shadow-sm)}
+    .trust-icon{width:38px;height:38px;border-radius:10px;background:var(--primary-soft);color:var(--primary);display:grid;place-items:center;font-weight:800;flex-shrink:0}
+    .buyer-cta{margin-top:30px;background:linear-gradient(135deg,#eff6ff 0%,#ffffff 100%);border:1px solid #bfdbfe;border-radius:18px;padding:24px 28px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+    .car-card{display:flex;flex-direction:column;transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease;transform-style:preserve-3d}
+    .car-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-md);border-color:#cbd5e1}
+    .car-thumb{position:relative;height:192px;background:radial-gradient(circle at 50% 25%,#fff 0%,#eef2f7 65%,#e2e8f0 100%);display:grid;place-items:center;border-bottom:1px solid var(--line);overflow:hidden}
+    .car-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .45s ease}
+    .car-card:hover .car-thumb img{transform:scale(1.06)}
+    .car-thumb svg{transition:transform .35s ease}
+    .car-card:hover .car-thumb svg{transform:scale(1.06) translateY(-2px)}
+    .car-thumb .badge{position:absolute;top:12px;right:12px;z-index:2}
+    .car-thumb .year-pill{position:absolute;top:12px;left:12px;z-index:2;background:rgba(11,18,32,.85);color:#fff;font-size:.74rem;font-weight:700;padding:3px 9px;border-radius:8px}
+    .thumb-tools{position:absolute;bottom:10px;right:10px;z-index:2;display:flex;gap:6px}
+    .icon-chip{background:rgba(255,255,255,.92);backdrop-filter:blur(6px);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:4px 9px;font-size:.74rem;font-weight:600;cursor:pointer}
+    .icon-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+    .icon-chip.fav.active{background:#e11d48;border-color:#e11d48;color:#fff}
+    .car-body{padding:18px 20px;display:flex;flex-direction:column;flex:1}
+    .car-title{font-size:1.08rem;font-weight:700;margin:0 0 4px}
+    .car-sub{font-size:.82rem;color:var(--muted);margin-bottom:12px}
+    .car-price{font-size:1.32rem;font-weight:800;color:var(--primary);font-variant-numeric:tabular-nums;margin-bottom:12px}
+    .car-specs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+    .spec-chip{font-size:.75rem;background:var(--surface-2);border:1px solid var(--line);padding:3px 8px;border-radius:7px;color:#475569;font-weight:500}
+    .car-actions{margin-top:auto;display:flex;gap:8px}
+    .swatch-row{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap}
+    .swatch-btn{width:24px;height:24px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px #cbd5e1;cursor:pointer;transition:transform .15s}
+    .swatch-btn:hover{transform:scale(1.18)}
+    .swatch-btn.active{box-shadow:0 0 0 2px var(--primary);transform:scale(1.15)}
+    .compare-tray{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);z-index:45;background:rgba(7,12,23,.94);backdrop-filter:blur(12px);color:#fff;padding:10px 18px;border-radius:14px;box-shadow:0 20px 35px rgba(0,0,0,.28);display:flex;align-items:center;gap:14px;flex-wrap:wrap;border:1px solid rgba(255,255,255,.14);animation:slideUp .25s ease-out}
+    .table-wrap{overflow-x:auto}
+    table{width:100%;border-collapse:collapse;font-size:.875rem}
+    th{text-align:left;padding:12px 14px;background:var(--surface-2);color:var(--muted);font-weight:600;font-size:.78rem;text-transform:uppercase;letter-spacing:.04em;border-bottom:1px solid var(--line)}
+    td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#fafcff}
+    .bar-row{display:flex;align-items:center;gap:12px;margin-bottom:10px;font-size:.84rem}
+    .bar-label{width:130px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .bar-track{flex:1;height:10px;background:var(--surface-2);border-radius:999px;overflow:hidden;border:1px solid var(--line)}
+    .bar-fill{height:100%;border-radius:999px;transition:width .7s ease}
+    .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+    .section-head h2{margin:0;font-size:1.5rem;letter-spacing:-.02em}
+    .section-head p{margin:4px 0 0;color:var(--muted);font-size:.9rem}
+    .kpi-card{padding:20px;transition:transform .2s ease,box-shadow .2s ease}
+    .kpi-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+    .kpi-label{font-size:.78rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em}
+    .kpi-value{font-size:1.75rem;font-weight:800;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+    .kpi-note{font-size:.8rem;color:var(--muted)}
+    .modal-backdrop{position:fixed;inset:0;z-index:60;background:rgba(7,12,23,.62);backdrop-filter:blur(6px);display:none;align-items:center;justify-content:center;padding:16px}
+    .modal-backdrop.open{display:flex}
+    .modal{background:#fff;border-radius:18px;width:100%;max-width:680px;max-height:90vh;overflow-y:auto;box-shadow:0 25px 50px -12px rgba(0,0,0,.3);animation:modalPop .24s cubic-bezier(.22,1,.36,1)}
+    @keyframes modalPop{from{opacity:0;transform:scale(.95) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+    .modal-head{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2}
+    .modal-head h3{margin:0;font-size:1.1rem}
+    .modal-body{padding:22px}
+    .toast-stack{position:fixed;bottom:20px;right:20px;z-index:80;display:flex;flex-direction:column;gap:8px}
+    .toast{background:var(--dark-nav);color:#fff;padding:12px 16px;border-radius:12px;font-size:.875rem;font-weight:500;box-shadow:var(--shadow-md);display:flex;align-items:center;gap:10px;animation:slideUp .22s ease-out;border-left:4px solid var(--primary)}
+    .toast.success{border-left-color:var(--success)}
+    .toast.error{border-left-color:var(--danger)}
+    @keyframes slideUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+    footer{border-top:1px solid var(--line);background:#fff;padding:22px 20px;color:var(--muted);font-size:.84rem}
+    .footer-inner{max-width:1280px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+    .footer-link{background:none;border:none;color:var(--muted);font-size:.82rem;cursor:pointer;text-decoration:underline;padding:4px 6px}
+    .footer-link:hover{color:var(--ink)}
+    .empty-state{text-align:center;padding:48px 20px;color:var(--muted)}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+    @media print{.mode-bar,.topbar,footer,.compare-tray,.no-print{display:none!important}body{background:#fff}}
+  </style>
+</head>
+<body>
+  <div class="mode-bar" id="modeBar"></div>
+  <header class="topbar" id="topbar">
+    <div class="topbar-inner">
+      <div class="brand" onclick="navigate('home')">
+        <div class="brand-icon">A</div>
+        <div><span>ApexDrive</span><span style="font-weight:500;color:#94a3b8;font-size:0.82rem;margin-left:4px;">Motors</span></div>
+      </div>
+      <button class="mobile-toggle" onclick="document.getElementById('topbar').classList.toggle('mobile-open')" aria-label="Toggle Menu">&#9776;</button>
+      <nav class="nav-links" id="navLinks"></nav>
+      <div class="user-pill" id="userControls"></div>
+    </div>
+  </header>
+  <main class="container" id="app"></main>
+  <div id="compareTrayHost"></div>
+  <footer>
+    <div class="footer-inner">
+      <div><strong>ApexDrive Motors</strong> &mdash; Flagship Car Dealership Showroom, Test-Drive Booking &amp; Financing.</div>
+      <div id="footerTools" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;"></div>
+    </div>
+  </footer>
+  <div class="modal-backdrop" id="modalBackdrop" onclick="if(event.target===this) closeModal()">
+    <div class="modal">
+      <div class="modal-head"><h3 id="modalTitle">Modal</h3><button class="btn btn-ghost btn-sm no-print" onclick="closeModal()">&#10005;</button></div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script>
+    const SUPABASE_CONFIG = {
+      url: 'https://oesssypcgblderqebmrj.supabase.co',
+      anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9lc3NzeXBjZ2JsZGVycWVibXJqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTUyODExMzEsImV4cCI6MjExMDg1NzEzMX0.vfcCIMT8XOa4UxSM55Voo0Ke0Iiqlu22me1BV2Whzxw'
+    };
+
+    const MASTER_ACCOUNT = {
+      id: 'ADMIN-01',
+      name: 'Master Admin',
+      email: 'admin@apexdrive.com',
+      pass: 'admin123',
+      role: 'Master Admin'
+    };
+
+    let sb = null;
+    let isCloudMode = false;
+    const LOCAL_STORAGE_KEY = 'apexdrive_dealership_v2';
+    const memoryStorage = {};
+
+    function safeGetStorage(store, key) { try { return store.getItem(key); } catch (e) { return memoryStorage[key] || null; } }
+    function safeSetStorage(store, key, val) { try { store.setItem(key, val); } catch (e) { memoryStorage[key] = val; } }
+    function safeRemoveStorage(store, key) { try { store.removeItem(key); } catch (e) { delete memoryStorage[key]; } }
+
+    const DEFAULT_DATA = {
+      vehicles: [
+        { id: 'CAR-101', make: 'Toyota', model: 'Camry Hybrid', year: 2025, body: 'Sedan', fuel: 'Hybrid', transmission: 'e-CVT', mileage: 1200, color: '#1e293b', colorName: 'Obsidian Slate', price: 34800, status: 'Available', branch: 'Central Showroom', vin: '4T1B11HK5SU109201', imageUrl: '', description: 'Executive mid-size sedan with adaptive cruise, leather cabin, and 51 MPG combined efficiency.' },
+        { id: 'CAR-102', make: 'BMW', model: 'i4 eDrive40', year: 2025, body: 'Electric', fuel: 'Electric', transmission: 'Single-Speed', mileage: 450, color: '#2563eb', colorName: 'Portimao Blue', price: 58900, status: 'Available', branch: 'Flagship Hub', vin: 'WBY73AW09SFN44102', imageUrl: '', description: 'All-electric gran coupe with 301-mile EPA range, curved dual display, and M-Sport suspension.' },
+        { id: 'CAR-103', make: 'Porsche', model: '911 Carrera', year: 2024, body: 'Coupe', fuel: 'Petrol', transmission: '8-Speed PDK', mileage: 3800, color: '#dc2626', colorName: 'Guards Red', price: 118500, status: 'Reserved', branch: 'Flagship Hub', vin: 'WP0AA2A92RS204118', imageUrl: '', description: 'Iconic twin-turbo flat-six sports coupe with Sport Chrono package and active exhaust.' },
+        { id: 'CAR-104', make: 'Mazda', model: 'CX-50 Turbo', year: 2025, body: 'SUV', fuel: 'Petrol', transmission: '6-Speed Auto', mileage: 850, color: '#0f766e', colorName: 'Cypress Green', price: 41200, status: 'Available', branch: 'Northside Lot', vin: '7MMVAABM1SN183304', imageUrl: '', description: 'All-wheel-drive adventure SUV with panoramic moonroof, Bose audio, and 3,500-lb towing.' },
+        { id: 'CAR-105', make: 'Tesla', model: 'Model Y Long Range', year: 2025, body: 'SUV', fuel: 'Electric', transmission: 'Single-Speed', mileage: 320, color: '#94a3b8', colorName: 'Pearl Silver', price: 47900, status: 'Available', branch: 'Central Showroom', vin: '7SAYGDEE4SF920115', imageUrl: '', description: 'Dual-motor AWD electric SUV with Autopilot, glass roof, and rapid Supercharger capability.' },
+        { id: 'CAR-106', make: 'Honda', model: 'Civic RS', year: 2024, body: 'Sedan', fuel: 'Petrol', transmission: 'CVT', mileage: 9400, color: '#475569', colorName: 'Sonic Gray', price: 27900, status: 'Sold', branch: 'Northside Lot', vin: '2HGFE2F5XRH510482', imageUrl: '', description: 'Sport-tuned compact sedan featuring wireless CarPlay, Honda Sensing suite, and sunroof.' }
+      ],
+      customers: [
+        { id: 'CUST-101', name: 'Daniel Tan', email: 'daniel.tan@example.com', phone: '+65 9123 4567', address: '18 Orchard Blvd, #09-02', passwordHash: 'demo', joined: '2026-02-14' },
+        { id: 'CUST-102', name: 'Aisha Rahman', email: 'aisha.r@example.com', phone: '+65 8234 9981', address: '42 Tampines Ave 4', passwordHash: 'demo', joined: '2026-05-03' },
+        { id: 'CUST-103', name: 'Marcus Lim', email: 'marcus.lim@example.com', phone: '+65 9876 5432', address: '77 Bukit Timah Rd', passwordHash: 'demo', joined: '2026-08-21' }
+      ],
+      staff: [
+        { id: 'STF-101', name: 'Elena Vance', email: 'elena@apexdrive.com', phone: '+65 6100 1122', role: 'Showroom Manager', department: 'Sales', salary: 7200, status: 'Active' },
+        { id: 'STF-102', name: 'Ryan Koh', email: 'ryan@apexdrive.com', phone: '+65 6100 3344', role: 'Sales Executive', department: 'Sales', salary: 4600, status: 'Active' },
+        { id: 'STF-103', name: 'Priya Nair', email: 'priya@apexdrive.com', phone: '+65 6100 5566', role: 'HR Specialist', department: 'Human Resources', salary: 5800, status: 'Active' },
+        { id: 'STF-104', name: 'Kevin Ong', email: 'kevin@apexdrive.com', phone: '+65 6100 7788', role: 'Finance Officer', department: 'Finance', salary: 5400, status: 'Active' }
+      ],
+      bookings: [
+        { id: 'BK-2041', vehicleId: 'CAR-103', customerId: 'CUST-101', customerName: 'Daniel Tan', date: '2026-11-28', timeSlot: '10:30 AM', branch: 'Flagship Hub', phone: '+65 9123 4567', notes: 'Interested in trade-in appraisal as well.', status: 'Confirmed', createdAt: '2026-11-18' },
+        { id: 'BK-2042', vehicleId: 'CAR-102', customerId: 'CUST-102', customerName: 'Aisha Rahman', date: '2026-11-29', timeSlot: '02:00 PM', branch: 'Flagship Hub', phone: '+65 8234 9981', notes: 'Requesting home charging demo.', status: 'Pending', createdAt: '2026-11-20' }
+      ],
+      sales: [
+        { id: 'INV-9001', vehicleId: 'CAR-106', vehicleLabel: '2024 Honda Civic RS', customerId: 'CUST-103', customerName: 'Marcus Lim', paymentMethod: 'Auto Loan (60 mo)', downPayment: 6000, tradeIn: 0, totalAmount: 27900, monthlyInstallment: 412, date: '2026-10-12' }
+      ],
+      savedIds: ['CAR-102']
+    };
+
+    let state = {
+      db: loadLocalDB(),
+      session: loadLocalSession(),
+      route: 'home',
+      selectedVehicleId: null,
+      previewColor: null,
+      previewMirrored: false,
+      compareIds: [],
+      spotlightIdx: 0,
+      spotlightPaused: false,
+      filters: { search: '', body: 'All', fuel: 'All', status: 'All', maxPrice: '', sort: 'newest' }
+    };
+
+    window.addEventListener('scroll', () => {
+      const tb = document.getElementById('topbar');
+      if (tb) tb.classList.toggle('scrolled', window.scrollY > 10);
+    }, { passive: true });
+
+    let spotlightTimer = null;
+    let spotlightTick = 0;
+    function startSpotlightLoop() {
+      if (spotlightTimer) clearInterval(spotlightTimer);
+      spotlightTick = 0;
+      spotlightTimer = setInterval(() => {
+        if (state.route !== 'home' || state.spotlightPaused) return;
+        const bar = document.getElementById('spotlightProgress');
+        spotlightTick += 5;
+        if (bar) bar.style.width = `${spotlightTick}%`;
+        if (spotlightTick >= 100) { spotlightTick = 0; stepSpotlight(1); }
+      }, 220);
+    }
+
+    function stepSpotlight(delta) {
+      const pool = state.db.vehicles.filter(v => v.status !== 'Sold');
+      if (!pool.length) return;
+      spotlightTick = 0;
+      state.spotlightIdx = (state.spotlightIdx + delta + pool.length) % pool.length;
+      const host = document.getElementById('spotlightStageHost');
+      if (host) host.innerHTML = renderSpotlightInner(pool);
+    }
+
+    function applyRevealAndCounters() {
+      const els = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window) {
+        els.forEach(el => el.classList.add('will-animate'));
+        const io = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) { entry.target.classList.add('visible'); io.unobserve(entry.target); }
+          });
+        }, { threshold: 0.05 });
+        els.forEach((el, i) => { el.style.transitionDelay = `${Math.min(i * 45, 220)}ms`; io.observe(el); });
+      }
+      document.querySelectorAll('[data-count]').forEach(el => {
+        const target = Number(el.getAttribute('data-count') || 0);
+        const isMoney = el.getAttribute('data-money') === '1';
+        const start = performance.now();
+        function frame(now) {
+          const t = Math.min(1, (now - start) / 500);
+          const val = Math.round(target * (1 - Math.pow(1 - t, 3)));
+          el.textContent = isMoney ? money(val) : val.toLocaleString();
+          if (t < 1) requestAnimationFrame(frame);
+        }
+        requestAnimationFrame(frame);
+      });
+      if (window.matchMedia && window.matchMedia('(pointer: fine)').matches) {
+        document.querySelectorAll('.tilt-card').forEach(card => {
+          card.addEventListener('mousemove', e => {
+            const r = card.getBoundingClientRect();
+            const x = (e.clientX - r.left) / r.width - 0.5;
+            const y = (e.clientY - r.top) / r.height - 0.5;
+            card.style.transform = `perspective(900px) rotateX(${(-y * 4).toFixed(2)}deg) rotateY(${(x * 4).toFixed(2)}deg) translateY(-5px)`;
+          });
+          card.addEventListener('mouseleave', () => { card.style.transform = ''; });
+        });
+      }
+    }
+
+    function loadLocalDB() {
+      try { const raw = safeGetStorage(window.localStorage, LOCAL_STORAGE_KEY); if (raw) return JSON.parse(raw); } catch (e) {}
+      const copy = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      safeSetStorage(window.localStorage, LOCAL_STORAGE_KEY, JSON.stringify(copy));
+      return copy;
+    }
+    function saveLocalDB() { if (!isCloudMode) safeSetStorage(window.localStorage, LOCAL_STORAGE_KEY, JSON.stringify(state.db)); }
+    function loadLocalSession() {
+      try { const raw = safeGetStorage(window.sessionStorage, 'apexdrive_session_v2'); return raw ? JSON.parse(raw) : null; } catch (e) { return null; }
+    }
+    function saveLocalSession(user) {
+      state.session = user;
+      if (!isCloudMode) {
+        if (user) safeSetStorage(window.sessionStorage, 'apexdrive_session_v2', JSON.stringify(user));
+        else safeRemoveStorage(window.sessionStorage, 'apexdrive_session_v2');
+      }
+    }
+
+    function mapVehicleFromDB(r) {
+      return { id: r.id, make: r.make, model: r.model, year: r.year, body: r.body, fuel: r.fuel, transmission: r.transmission, mileage: r.mileage, color: r.color, colorName: r.color_name, price: Number(r.price), status: r.status, branch: r.branch, vin: r.vin, imageUrl: r.image_url || '', description: r.description || '' };
+    }
+    function mapVehicleToDB(v) {
+      return { id: v.id, make: v.make, model: v.model, year: v.year, body: v.body, fuel: v.fuel, transmission: v.transmission, mileage: v.mileage, color: v.color, color_name: v.colorName, price: v.price, status: v.status, branch: v.branch, vin: v.vin, image_url: v.imageUrl || '', description: v.description || '' };
+    }
+
+    async function syncFromSupabase(passedSession = null) {
+      if (!isCloudMode || !sb) return false;
+      try {
+        let session = passedSession;
+        if (!session) {
+          const res = await sb.auth.getSession();
+          session = res?.data?.session || null;
+        }
+        if (session?.user) {
+          let { data: prof, error: profErr } = await sb.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+          if (profErr) {
+            toast('Profile read error: ' + profErr.message, 'error');
+            return false;
+          }
+          if (!prof) {
+            const fb = { id: session.user.id, email: session.user.email, full_name: session.user.user_metadata?.full_name || session.user.email.split('@')[0], phone: session.user.user_metadata?.phone || '', address: session.user.user_metadata?.address || '', portal_role: 'customer' };
+            const { error: upErr } = await sb.from('profiles').upsert(fb);
+            if (upErr) {
+              toast('Profile create error: ' + upErr.message, 'error');
+              return false;
+            }
+            prof = fb;
+          }
+          state.session = { type: prof.portal_role, id: prof.id, name: prof.full_name, email: prof.email, phone: prof.phone, address: prof.address, role: prof.portal_role === 'staff' ? 'Master Admin' : 'Buyer' };
+        } else { state.session = null; }
+
+        const { data: vRows } = await sb.from('vehicles').select('*').order('created_at', { ascending: false });
+        state.db.vehicles = (vRows || []).map(mapVehicleFromDB);
+
+        if (state.session) {
+          const { data: bRows } = await sb.from('bookings').select('*').order('created_at', { ascending: false });
+          state.db.bookings = (bRows || []).map(b => ({ id: b.id, vehicleId: b.vehicle_id, customerId: b.customer_id, customerName: b.customer_name, date: b.booking_date, timeSlot: b.time_slot, branch: b.branch, phone: b.phone, notes: b.notes || '', status: b.status, createdAt: (b.created_at || '').slice(0, 10) }));
+          const { data: sRows } = await sb.from('sales').select('*').order('created_at', { ascending: false });
+          state.db.sales = (sRows || []).map(s => ({ id: s.id, vehicleId: s.vehicle_id, vehicleLabel: s.vehicle_label, customerId: s.customer_id, customerName: s.customer_name, paymentMethod: s.payment_method, downPayment: Number(s.down_payment), tradeIn: Number(s.trade_in), totalAmount: Number(s.total_amount), monthlyInstallment: Number(s.monthly_installment), date: s.sale_date }));
+          const { data: favRows } = await sb.from('saved_vehicles').select('vehicle_id').eq('user_id', state.session.id);
+          state.db.savedIds = (favRows || []).map(f => f.vehicle_id);
+          if (state.session.type === 'staff') {
+            const { data: pRows } = await sb.from('profiles').select('*').order('created_at', { ascending: false });
+            state.db.customers = (pRows || []).filter(p => p.portal_role === 'customer').map(p => ({ id: p.id, name: p.full_name, email: p.email, phone: p.phone || '', address: p.address || '', joined: (p.created_at || '').slice(0, 10) }));
+            if (!state.db.staff.length) state.db.staff = JSON.parse(JSON.stringify(DEFAULT_DATA.staff));
+          }
+        } else { state.db.bookings = []; state.db.sales = []; state.db.savedIds = []; }
+        return true;
+      } catch (err) {
+        console.error(err);
+        toast('Sync error: ' + err.message, 'error');
+        return false;
+      } finally { render(); }
+    }
+
+    function initRealtime() {
+      if (!isCloudMode || !sb) return;
+      sb.channel('apexdrive-live')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'vehicles' }, () => syncFromSupabase())
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'bookings' }, () => syncFromSupabase())
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'sales' }, () => syncFromSupabase())
+        .subscribe();
+    }
+
+    function nextId(prefix, list) {
+      const nums = list.map(item => Number(String(item.id).split('-')[1]) || 100);
+      return `${prefix}-${(nums.length ? Math.max(...nums) : 100) + 1}`;
+    }
+
+    function resetDemoData() {
+      if (isCloudMode) return toast('Reset Demo Data only applies to Local Preview Mode.', 'info');
+      if (!confirm('Reset all local vehicles, bookings, sales, buyers, and HR records back to defaults?')) return;
+      state.db = JSON.parse(JSON.stringify(DEFAULT_DATA));
+      saveLocalDB(); saveLocalSession(null); state.compareIds = [];
+      toast('Demo database reset successfully.', 'success'); navigate('home');
+    }
+
+    async function hashPassword(str) {
+      if (window.crypto && crypto.subtle) {
+        const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+        return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+      }
+      return btoa(str);
+    }
+
+    function money(n) { return '$' + Number(n || 0).toLocaleString('en-US', { maximumFractionDigits: 0 }); }
+    function escapeHtml(str) { return String(str ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); }
+
+    function toast(msg, type = 'info') {
+      const stack = document.getElementById('toastStack');
+      if (!stack) return;
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      el.textContent = msg;
+      stack.appendChild(el);
+      setTimeout(() => { if (el.remove) el.remove(); }, 3400);
+    }
+
+    function openModal(title, html) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalBody').innerHTML = html;
+      document.getElementById('modalBackdrop').classList.add('open');
+    }
+    function closeModal() { document.getElementById('modalBackdrop').classList.remove('open'); }
+
+    function carMediaHTML(v, overrideColor = null, mirrored = false) {
+      const color = overrideColor || v.color;
+      const flip = mirrored ? 'transform: scaleX(-1);' : '';
+      if (v.imageUrl) {
+        return `<img src="${escapeHtml(v.imageUrl)}" style="${flip}" alt="${escapeHtml(v.make + ' ' + v.model)}" onerror="this.style.display='none';this.nextElementSibling.style.display='block';" /><div style="display:none;${flip}">${carSVG(v.body, color)}</div>`;
+      }
+      return `<div style="transition:transform 0.35s ease;${flip}">${carSVG(v.body, color)}</div>`;
+    }
+
+    function carSVG(body = 'Sedan', color = '#2563eb') {
+      const c = escapeHtml(color || '#2563eb');
+      if (body === 'SUV') return `<svg viewBox="0 0 260 110" width="220" height="94" aria-hidden="true"><ellipse cx="130" cy="96" rx="102" ry="8" fill="rgba(15,23,42,0.14)"/><path d="M26 70 L32 45 L66 36 L108 22 L190 22 L222 42 L236 52 L236 74 L26 74 Z" fill="${c}"/><path d="M74 38 L110 26 L146 26 L146 42 L68 42 Z" fill="#e2e8f0" opacity="0.9"/><path d="M152 26 L186 26 L212 42 L152 42 Z" fill="#e2e8f0" opacity="0.9"/><rect x="228" y="54" width="8" height="6" rx="2" fill="#fef08a"/><circle cx="72" cy="76" r="16" fill="#0f172a"/><circle cx="72" cy="76" r="8" fill="#cbd5e1"/><circle cx="192" cy="76" r="16" fill="#0f172a"/><circle cx="192" cy="76" r="8" fill="#cbd5e1"/></svg>`;
+      if (body === 'Coupe') return `<svg viewBox="0 0 260 110" width="220" height="94" aria-hidden="true"><ellipse cx="130" cy="96" rx="104" ry="8" fill="rgba(15,23,42,0.14)"/><path d="M22 72 L30 53 L78 44 L122 26 L180 28 L216 48 L240 56 L238 74 L22 74 Z" fill="${c}"/><path d="M88 45 L124 30 L174 32 L202 46 Z" fill="#e2e8f0" opacity="0.9"/><rect x="230" y="57" width="8" height="5" rx="2" fill="#fef08a"/><circle cx="70" cy="76" r="15" fill="#0f172a"/><circle cx="70" cy="76" r="7.5" fill="#cbd5e1"/><circle cx="194" cy="76" r="15" fill="#0f172a"/><circle cx="194" cy="76" r="7.5" fill="#cbd5e1"/></svg>`;
+      return `<svg viewBox="0 0 260 110" width="220" height="94" aria-hidden="true"><ellipse cx="130" cy="96" rx="102" ry="8" fill="rgba(15,23,42,0.14)"/><path d="M24 72 L30 50 L74 42 L110 25 L178 25 L210 44 L236 52 L236 74 L24 74 Z" fill="${c}"/><path d="M82 43 L112 29 L144 29 L144 44 Z" fill="#e2e8f0" opacity="0.9"/><path d="M150 29 L175 29 L201 44 L150 44 Z" fill="#e2e8f0" opacity="0.9"/><rect x="228" y="54" width="8" height="5" rx="2" fill="#fef08a"/><circle cx="70" cy="76" r="15" fill="#0f172a"/><circle cx="70" cy="76" r="7.5" fill="#cbd5e1"/><circle cx="194" cy="76" r="15" fill="#0f172a"/><circle cx="194" cy="76" r="7.5" fill="#cbd5e1"/></svg>`;
+    }
+
+    function navigate(route, vehicleId = null) {
+      state.route = route;
+      if (vehicleId) { state.selectedVehicleId = vehicleId; state.previewColor = null; state.previewMirrored = false; }
+      const tb = document.getElementById('topbar');
+      if (tb) tb.classList.remove('mobile-open');
+      if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
+      render();
+    }
+    function quickFilterBody(body) { state.filters.body = body; navigate('c-vehicles'); }
+
+    function demoLogin(type) {
+      if (isCloudMode) return toast('In Live Cloud Mode, please sign in with your account.', 'info');
+      if (type === 'customer') {
+        const c = state.db.customers[0];
+        saveLocalSession({ type: 'customer', id: c.id, name: c.name, email: c.email, phone: c.phone, address: c.address });
+        toast(`Signed in as Buyer: ${c.name}`, 'success'); navigate('cust-home');
+      } else {
+        saveLocalSession({ type: 'staff', id: MASTER_ACCOUNT.id, name: MASTER_ACCOUNT.name, email: MASTER_ACCOUNT.email, role: MASTER_ACCOUNT.role });
+        toast('Signed in as Master Admin.', 'success'); navigate('staff-home');
+      }
+    }
+
+    async function logout() {
+      if (isCloudMode && sb) await sb.auth.signOut();
+      saveLocalSession(null); state.compareIds = [];
+      toast('Signed out.'); navigate('home');
+    }
+
+    async function handleLogin(e, portal) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const email = fd.get('email').trim().toLowerCase(), password = fd.get('password');
+
+    if (isCloudMode && sb) {
+        const { data, error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) return toast(error.message, 'error');
+        const ok = await syncFromSupabase(data?.session || null);
+        if (!ok) return;
+        if (portal === 'staff' && state.session?.type !== 'staff') {
+          await sb.auth.signOut();
+          saveLocalSession(null);
+          render();
+          return toast('Access denied: only the designated Master Admin account can enter here.', 'error');
+        }
+        toast(`Welcome back, ${state.session?.name || email}!`, 'success');
+        return navigate(state.session?.type === 'staff' ? 'staff-home' : 'cust-home');
+    }
+
+      if (portal === 'staff') {
+        if (email !== MASTER_ACCOUNT.email.toLowerCase() || password !== MASTER_ACCOUNT.pass) {
+          return toast('Invalid Master Admin email or password.', 'error');
+        }
+        saveLocalSession({ type: 'staff', id: MASTER_ACCOUNT.id, name: MASTER_ACCOUNT.name, email: MASTER_ACCOUNT.email, role: MASTER_ACCOUNT.role });
+        toast('Welcome back, Master Admin!', 'success');
+        return navigate('staff-home');
+      }
+
+      const pwHash = await hashPassword(password);
+      const user = state.db.customers.find(c => c.email.toLowerCase() === email);
+      if (!user || (user.passwordHash !== 'demo' && user.passwordHash !== pwHash)) return toast('Invalid buyer email or password.', 'error');
+      saveLocalSession({ type: 'customer', id: user.id, name: user.name, email: user.email, phone: user.phone, address: user.address });
+      toast(`Welcome back, ${user.name}!`, 'success'); navigate('cust-home');
+    }
+
+    async function handleBuyerRegister(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const name = fd.get('name').trim(), email = fd.get('email').trim().toLowerCase(), phone = fd.get('phone').trim(), password = fd.get('password');
+      if (isCloudMode && sb) {
+        const { data, error } = await sb.auth.signUp({ email, password, options: { data: { full_name: name, phone, address: (fd.get('address') || '').trim() } } });
+        if (error) return toast(error.message, 'error');
+        if (!data.session) return toast('Account created! Check your email to verify before signing in.', 'success');
+        await syncFromSupabase(); toast('Buyer account created & signed in!', 'success');
+        return navigate('cust-home');
+      }
+      const pwHash = await hashPassword(password);
+      if (state.db.customers.some(c => c.email.toLowerCase() === email)) return toast('Email already registered.', 'error');
+      const cust = { id: nextId('CUST', state.db.customers), name, email, phone, address: (fd.get('address') || '').trim(), passwordHash: pwHash, joined: new Date().toISOString().slice(0, 10) };
+      state.db.customers.push(cust); saveLocalDB();
+      saveLocalSession({ type: 'customer', id: cust.id, name: cust.name, email: cust.email, phone: cust.phone, address: cust.address });
+      toast('Buyer account created!', 'success'); navigate('cust-home');
+    }
+
+    async function toggleFavorite(vehicleId) {
+      const idx = state.db.savedIds.indexOf(vehicleId);
+      if (isCloudMode && sb) {
+        if (!state.session) return toast('Sign in as a Buyer to save vehicles to your garage.', 'info');
+        if (idx >= 0) { await sb.from('saved_vehicles').delete().match({ user_id: state.session.id, vehicle_id: vehicleId }); state.db.savedIds.splice(idx, 1); toast('Removed from Saved Garage.'); }
+        else { await sb.from('saved_vehicles').insert({ user_id: state.session.id, vehicle_id: vehicleId }); state.db.savedIds.push(vehicleId); toast('Saved to your Garage!', 'success'); }
+      } else {
+        if (idx >= 0) { state.db.savedIds.splice(idx, 1); toast('Removed from Saved Garage.'); }
+        else { state.db.savedIds.push(vehicleId); toast('Saved to your Garage!', 'success'); }
+        saveLocalDB();
+      }
+      render();
+    }
+
+    function toggleCompare(vehicleId) {
+      const idx = state.compareIds.indexOf(vehicleId);
+      if (idx >= 0) state.compareIds.splice(idx, 1);
+      else { if (state.compareIds.length >= 3) return toast('Compare up to 3 vehicles at once.', 'info'); state.compareIds.push(vehicleId); }
+      render();
+    }
+
+    function openCompareModal() {
+      const cars = state.compareIds.map(id => state.db.vehicles.find(v => v.id === id)).filter(Boolean);
+      if (cars.length < 2) return toast('Select at least 2 vehicles to compare.', 'info');
+      const rows = [
+        ['Price', v => `<strong style="color:var(--primary);">${money(v.price)}</strong>`],
+        ['Est. Monthly (20% down, 60m)', v => { const p = v.price * 0.8, r = 0.035 / 12; return money(Math.round((p * r) / (1 - Math.pow(1 + r, -60)))) + '/mo'; }],
+        ['Year', v => v.year], ['Body Style', v => escapeHtml(v.body)], ['Fuel Type', v => escapeHtml(v.fuel)],
+        ['Transmission', v => escapeHtml(v.transmission)], ['Mileage', v => Number(v.mileage).toLocaleString() + ' mi'],
+        ['Color', v => escapeHtml(v.colorName)], ['Branch', v => escapeHtml(v.branch)],
+        ['Status', v => `<span class="badge badge-${v.status.toLowerCase()}">${escapeHtml(v.status)}</span>`]
+      ];
+      openModal('Side-by-Side Vehicle Comparison', `<div class="table-wrap"><table><thead><tr><th>Specification</th>${cars.map(c => `<th>${c.year} ${escapeHtml(c.make)} ${escapeHtml(c.model)}</th>`).join('')}</tr></thead><tbody>${rows.map(([l, fn]) => `<tr><td><strong>${l}</strong></td>${cars.map(c => `<td>${fn(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`);
+    }
+
+    function renderModeBar() {
+      const bar = document.getElementById('modeBar');
+      if (!bar) return;
+      bar.innerHTML = isCloudMode
+        ? `<span class="mode-dot live"></span> <strong>Live Dealership Connected</strong> &mdash; Real-time inventory &amp; bookings active.`
+        : `<span class="mode-dot local"></span> <strong>Local Preview Mode</strong> &mdash; Add Supabase URL &amp; Anon Key in <code>index.html</code> for live multi-user sync.`;
+    }
+
+    function renderNav() {
+      const nav = document.getElementById('navLinks'), controls = document.getElementById('userControls');
+      if (!nav || !controls) return;
+      const s = state.session, favCount = state.db.savedIds.length;
+      let links = [{ id: 'home', label: 'Home' }, { id: 'c-vehicles', label: 'Showroom' }, { id: 'garage', label: 'Saved Garage', count: favCount }];
+      if (s?.type === 'customer') links = [{ id: 'cust-home', label: 'Buyer Home' }, { id: 'c-vehicles', label: 'Browse Vehicles' }, { id: 'garage', label: 'Saved Garage', count: favCount }, { id: 'book-record', label: 'My Bookings & Orders' }, { id: 'profile', label: 'Profile' }];
+      else if (s?.type === 'staff') links = [{ id: 'staff-home', label: 'Admin Dashboard' }, { id: 's-vehicles', label: 'Inventory' }, { id: 's-details', label: 'Bookings & Sales' }, { id: 's-customers', label: 'Buyers' }, { id: 's-hr', label: 'HR & Staff' }];
+      nav.innerHTML = links.map(l => `<button class="nav-btn ${state.route === l.id ? 'active' : ''}" onclick="navigate('${l.id}')">${l.label}${l.count ? `<span class="pill-count">${l.count}</span>` : ''}</button>`).join('');
+      controls.innerHTML = !s
+        ? `<button class="btn btn-primary btn-sm" onclick="navigate('cust-auth')">Buyer Sign In</button>`
+        : `<span class="role-badge ${s.type === 'staff' ? 'staff' : ''}">${s.type === 'staff' ? 'Master Admin' : 'Buyer'}</span><span style="font-weight:600;">${escapeHtml(s.name)}</span><button class="btn btn-secondary btn-sm" onclick="logout()">Sign Out</button>`;
+    }
+
+    function renderFooterTools() {
+      const ft = document.getElementById('footerTools');
+      if (!ft) return;
+      const staffLink = state.session?.type === 'staff'
+        ? `<button class="footer-link" onclick="navigate('staff-home')">Admin Dashboard</button>`
+        : `<button class="footer-link" onclick="navigate('staff-auth')">Staff Admin Login</button>`;
+      const modeBtn = isCloudMode
+        ? `<button class="btn btn-secondary btn-sm" onclick="syncFromSupabase()">&#8635; Refresh Live Data</button>`
+        : `<button class="btn btn-secondary btn-sm" onclick="resetDemoData()">Reset Demo Data</button>`;
+      ft.innerHTML = `${staffLink}${modeBtn}`;
+    }
+
+    function renderCompareTray() {
+      const host = document.getElementById('compareTrayHost');
+      if (!host) return;
+      host.innerHTML = state.compareIds.length
+        ? `<div class="compare-tray"><span><strong>${state.compareIds.length}/3</strong> selected</span><button class="btn btn-primary btn-sm" ${state.compareIds.length < 2 ? 'disabled' : ''} onclick="openCompareModal()">Compare Now</button><button class="btn btn-ghost btn-sm" style="color:#cbd5e1;" onclick="state.compareIds=[];render();">Clear</button></div>`
+        : '';
+    }
+
+    function render() {
+      renderModeBar(); renderNav(); renderFooterTools(); renderCompareTray();
+      const app = document.getElementById('app');
+      if (!app) return;
+      const r = state.route;
+      const routes = { 'home': viewHome, 'cust-auth': viewBuyerAuth, 'staff-auth': viewMasterAuth, 'cust-home': viewCustHome, 'c-vehicles': viewCVehicles, 'garage': viewGarage, 'profile': viewProfile, 'c-details': viewVehicleDetails, 'book-car': viewBookCar, 'buy-car': viewBuyCar, 'book-record': viewBookRecord, 'staff-home': viewStaffHome, 's-vehicles': viewSVehicles, 's-details': viewSDetails, 's-customers': viewSCustomers, 's-hr': viewHRStaff };
+      app.innerHTML = `<div class="view-enter">${(routes[r] || viewHome)()}</div>`;
+      if (r === 'c-vehicles') renderVehicleGrid();
+      applyRevealAndCounters();
+    }
+
+    function renderSpotlightInner(pool) {
+      if (!pool.length) return `<div style="padding:36px;text-align:center;color:#cbd5e1;">No available vehicles in showroom.</div>`;
+      const v = pool[state.spotlightIdx % pool.length];
+      return `
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+          <span class="badge badge-info">Showroom Spotlight</span>
+          <div style="display:flex;gap:6px;">
+            <button class="btn btn-ghost btn-sm" style="color:#fff;border:1px solid rgba(255,255,255,.16);" onclick="stepSpotlight(-1)">&#8249;</button>
+            <button class="btn btn-ghost btn-sm" style="color:#fff;border:1px solid rgba(255,255,255,.16);" onclick="stepSpotlight(1)">&#8250;</button>
+          </div>
+        </div>
+        <div class="spotlight-floor"><div class="spotlight-car-anim">${carMediaHTML(v)}</div></div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;">
+          <div>
+            <div style="font-size:.78rem;color:#93c5fd;font-weight:700;">${v.year} &bull; ${escapeHtml(v.branch)}</div>
+            <div style="font-size:1.25rem;font-weight:800;">${escapeHtml(v.make)} ${escapeHtml(v.model)}</div>
+            <div style="font-size:.82rem;color:#cbd5e1;">${escapeHtml(v.fuel)} &bull; ${escapeHtml(v.transmission)} &bull; ${Number(v.mileage).toLocaleString()} mi</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:1.35rem;font-weight:800;color:#60a5fa;">${money(v.price)}</div>
+            <button class="btn btn-primary btn-sm" style="margin-top:6px;" onclick="navigate('c-details','${escapeHtml(v.id)}')">Inspect Car &rarr;</button>
+          </div>
+        </div>
+        <div class="spotlight-progress"><div class="spotlight-progress-fill" id="spotlightProgress"></div></div>`;
+    }
+
+    function viewHome() {
+      const avail = state.db.vehicles.filter(v => v.status === 'Available').length;
+      const featured = state.db.vehicles.filter(v => v.status !== 'Sold');
+      const countBy = b => state.db.vehicles.filter(v => v.body === b).length;
+      const buyerBtn = !isCloudMode
+        ? `<button class="btn btn-secondary" onclick="demoLogin('customer')">Demo Buyer Account</button><button class="btn btn-secondary" onclick="navigate('cust-auth')">Buyer Sign In / Register</button>`
+        : `<button class="btn btn-secondary" onclick="navigate('cust-auth')">Buyer Sign In / Register</button>`;
+      return `
+        <section class="hero">
+          <div>
+            <span class="badge badge-info" style="margin-bottom:14px;">${isCloudMode ? 'Live Dealership Showroom' : 'Flagship Automotive Showroom'}</span>
+            <h1>Curated Vehicles. Seamless Test Drives. Instant Financing.</h1>
+            <p>Browse our latest showroom fleet, compare models side by side, schedule test-drive appointments, and estimate your monthly auto loan in seconds.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="navigate('c-vehicles')">Explore Showroom</button>${buyerBtn}</div>
+            <div class="hero-stats">
+              <div class="hero-stat"><strong data-count="${avail}">${avail}</strong><span>Ready for Delivery</span></div>
+              <div class="hero-stat"><strong data-count="${state.db.vehicles.length}">${state.db.vehicles.length}</strong><span>Showroom Units</span></div>
+              <div class="hero-stat"><strong>150-Pt</strong><span>Certified Inspection</span></div>
+            </div>
+          </div>
+          <div class="spotlight-stage tilt-card" id="spotlightStageHost" onmouseenter="state.spotlightPaused=true" onmouseleave="state.spotlightPaused=false">${renderSpotlightInner(featured)}</div>
+        </section>
+        <div class="category-strip reveal">
+          <div class="cat-pill" onclick="quickFilterBody('All')">All Models <span>${state.db.vehicles.length}</span></div>
+          <div class="cat-pill" onclick="quickFilterBody('Sedan')">Sedans <span>${countBy('Sedan')}</span></div>
+          <div class="cat-pill" onclick="quickFilterBody('SUV')">SUVs <span>${countBy('SUV')}</span></div>
+          <div class="cat-pill" onclick="quickFilterBody('Coupe')">Sports Coupes <span>${countBy('Coupe')}</span></div>
+          <div class="cat-pill" onclick="quickFilterBody('Electric')">Electric EVs <span>${countBy('Electric')}</span></div>
+        </div>
+        <div class="section-head reveal">
+          <div><h2>Featured Showroom Vehicles</h2><p>Bookmark to your Saved Garage or select up to 3 models to compare.</p></div>
+          <button class="btn btn-secondary" onclick="navigate('c-vehicles')">View All Inventory &rarr;</button>
+        </div>
+        <div class="grid grid-3">${featured.length ? featured.slice(0, 3).map(carCardHTML).join('') : `<div class="card empty-state" style="grid-column:1/-1;">No vehicles in database yet.</div>`}</div>
+        <div class="trust-strip reveal">
+          <div class="trust-item"><div class="trust-icon">&#10003;</div><div><strong>150-Point Certified</strong><div style="font-size:.82rem;color:var(--muted);">Full mechanical, battery &amp; diagnostic inspection.</div></div></div>
+          <div class="trust-item"><div class="trust-icon">$</div><div><strong>Transparent Pricing</strong><div style="font-size:.82rem;color:var(--muted);">Live auto-loan estimator with zero hidden markups.</div></div></div>
+          <div class="trust-item"><div class="trust-icon">&#8644;</div><div><strong>Instant Trade-In</strong><div style="font-size:.82rem;color:var(--muted);">Apply current vehicle value directly toward down payment.</div></div></div>
+          <div class="trust-item"><div class="trust-icon">&#9733;</div><div><strong>3 Flagship Branches</strong><div style="font-size:.82rem;color:var(--muted);">Central Showroom, Flagship Hub &amp; Northside Lot.</div></div></div>
+        </div>
+        <div class="buyer-cta reveal">
+          <div>
+            <h3 style="margin:0 0 4px;">Ready to Book a Test Drive or Reserve Online?</h3>
+            <p style="margin:0;color:var(--muted);font-size:.9rem;">Sign in or create your free Buyer account to save vehicles, schedule showroom visits, and view invoices.</p>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="navigate('cust-auth')">Buyer Sign In / Register</button>
+            ${!isCloudMode ? `<button class="btn btn-secondary" onclick="demoLogin('customer')">1-Click Buyer Demo</button>` : ''}
+          </div>
+        </div>`;
+    }
+
+    function carCardHTML(v) {
+      const badgeClass = v.status === 'Available' ? 'badge-available' : (v.status === 'Reserved' ? 'badge-reserved' : 'badge-sold');
+      const isFav = state.db.savedIds.includes(v.id), isCmp = state.compareIds.includes(v.id);
+      return `
+        <article class="card car-card tilt-card reveal">
+          <div class="car-thumb">
+            <span class="year-pill">${v.year}</span>
+            <span class="badge ${badgeClass}">${escapeHtml(v.status)}</span>
+            ${carMediaHTML(v)}
+            <div class="thumb-tools">
+              <button class="icon-chip fav ${isFav?'active':''}" onclick="toggleFavorite('${escapeHtml(v.id)}')">${isFav ? '&#9829; Saved' : '&#9825; Save'}</button>
+              <button class="icon-chip ${isCmp?'active':''}" onclick="toggleCompare('${escapeHtml(v.id)}')">${isCmp ? '&#10003; Compare' : '+ Compare'}</button>
+            </div>
+          </div>
+          <div class="car-body">
+            <h3 class="car-title">${escapeHtml(v.make)} ${escapeHtml(v.model)}</h3>
+            <div class="car-sub">${escapeHtml(v.branch)} &bull; ${escapeHtml(v.colorName)}</div>
+            <div class="car-price">${money(v.price)}</div>
+            <div class="car-specs"><span class="spec-chip">${escapeHtml(v.body)}</span><span class="spec-chip">${escapeHtml(v.fuel)}</span><span class="spec-chip">${escapeHtml(v.transmission)}</span><span class="spec-chip">${Number(v.mileage).toLocaleString()} mi</span></div>
+            <div class="car-actions">
+              <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="navigate('c-details','${escapeHtml(v.id)}')">Details</button>
+              <button class="btn btn-primary btn-sm" style="flex:1;" ${v.status === 'Sold' ? 'disabled' : ''} onclick="navigate('book-car','${escapeHtml(v.id)}')">Book</button>
+            </div>
+          </div>
+        </article>`;
+    }
+
+    function viewBuyerAuth() {
+      return `
+        <div style="max-width:920px;margin:16px auto;">
+          <div class="section-head">
+            <div><h2>Buyer Portal Sign In</h2><p>${isCloudMode ? 'Sign in or create your Buyer account to book test drives and purchase vehicles.' : 'Demo buyer: <strong>daniel.tan@example.com</strong> (any password) or create a new Buyer account.'}</p></div>
+            ${!isCloudMode ? `<button class="btn btn-secondary" onclick="demoLogin('customer')">1-Click Buyer Demo</button>` : ''}
+          </div>
+          <div class="grid grid-2">
+            <div class="card card-pad"><h3 style="margin-top:0;">Buyer Sign In</h3><form onsubmit="handleLogin(event,'customer')"><div class="field"><label>Email</label><input class="input" type="email" name="email" required placeholder="daniel.tan@example.com" /></div><div class="field"><label>Password</label><input class="input" type="password" name="password" required placeholder="••••••••" /></div><button class="btn btn-primary" style="width:100%;" type="submit">Sign In as Buyer</button></form></div>
+            <div class="card card-pad"><h3 style="margin-top:0;">Create Buyer Account</h3><form onsubmit="handleBuyerRegister(event)"><div class="field"><label>Full Name</label><input class="input" name="name" required placeholder="Jordan Lee" /></div><div class="field"><label>Email</label><input class="input" type="email" name="email" required placeholder="jordan@example.com" /></div><div class="field"><label>Phone</label><input class="input" type="tel" name="phone" required placeholder="+65 9000 1234" /></div><div class="field"><label>Address</label><input class="input" name="address" placeholder="Singapore" /></div><div class="field"><label>Password</label><input class="input" type="password" name="password" required minlength="6" /></div><button class="btn btn-success" style="width:100%;" type="submit">Create Buyer Account</button></form></div>
+          </div>
+        </div>`;
+    }
+
+    function viewMasterAuth() {
+      return `
+        <div style="max-width:480px;margin:28px auto;">
+          <button class="btn btn-secondary btn-sm" style="margin-bottom:14px;" onclick="navigate('home')">&larr; Back to Showroom</button>
+          <div class="card card-pad">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <h2 style="margin:0;">Master Admin Sign In</h2>
+              <span class="badge badge-available">Single Admin</span>
+            </div>
+            <p style="color:var(--muted);font-size:.86rem;margin-top:0;">Restricted dealership management console for inventory, bookings, buyers &amp; HR.</p>
+            <form onsubmit="handleLogin(event,'staff')">
+              <div class="field"><label>Master Admin Email</label><input class="input" type="email" name="email" required placeholder="${isCloudMode ? 'admin@apexdrive.com' : MASTER_ACCOUNT.email}" /></div>
+              <div class="field"><label>Password</label><input class="input" type="password" name="password" required placeholder="••••••••" /></div>
+              <button class="btn btn-primary" style="width:100%;margin-bottom:10px;" type="submit">Sign In to Admin Console</button>
+            </form>
+            ${!isCloudMode ? `<div style="border-top:1px solid var(--line);padding-top:12px;margin-top:6px;text-align:center;"><div style="font-size:.78rem;color:var(--muted);margin-bottom:8px;">Default Local Master: <code>${MASTER_ACCOUNT.email}</code> / <code>${MASTER_ACCOUNT.pass}</code></div><button class="btn btn-secondary btn-sm" style="width:100%;" onclick="demoLogin('staff')">1-Click Master Admin Demo</button></div>` : ''}
+          </div>
+        </div>`;
+    }
+
+    function viewCustHome() {
+      if (state.session?.type !== 'customer') return viewBuyerAuth();
+      const s = state.session, myBookings = state.db.bookings.filter(b => b.customerId === s.id), mySales = state.db.sales.filter(x => x.customerId === s.id), avail = state.db.vehicles.filter(v => v.status === 'Available');
+      return `
+        <div class="section-head"><div><h2>Welcome, ${escapeHtml(s.name)}</h2><p>Manage your saved garage, test-drive bookings, purchases, and profile.</p></div><div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="navigate('c-vehicles')">Browse Showroom</button><button class="btn btn-secondary" onclick="navigate('book-record')">My Bookings (${myBookings.length})</button></div></div>
+        <div class="grid grid-4" style="margin-bottom:26px;">
+          <div class="card kpi-card"><div class="kpi-label">Available Fleet</div><div class="kpi-value" data-count="${avail.length}">${avail.length}</div><div class="kpi-note">Ready for test drive</div></div>
+          <div class="card kpi-card"><div class="kpi-label">Saved Garage</div><div class="kpi-value" data-count="${state.db.savedIds.length}">${state.db.savedIds.length}</div><div class="kpi-note">Bookmarked vehicles</div></div>
+          <div class="card kpi-card"><div class="kpi-label">Your Bookings</div><div class="kpi-value" data-count="${myBookings.length}">${myBookings.length}</div><div class="kpi-note">${myBookings.filter(b => b.status === 'Confirmed').length} confirmed</div></div>
+          <div class="card kpi-card"><div class="kpi-label">Purchased Cars</div><div class="kpi-value" data-count="${mySales.length}">${mySales.length}</div><div class="kpi-note">Completed orders</div></div>
+        </div>
+        <div class="section-head"><div><h3>Recommended Available Vehicles</h3></div></div>
+        <div class="grid grid-3">${avail.slice(0, 3).map(carCardHTML).join('')}</div>`;
+    }
+
+    function viewGarage() {
+      const savedCars = state.db.vehicles.filter(v => state.db.savedIds.includes(v.id));
+      return `<div class="section-head"><div><h2>Saved Garage</h2><p>Vehicles you bookmarked for quick comparison or booking.</p></div><button class="btn btn-secondary" onclick="navigate('c-vehicles')">Browse All Vehicles</button></div>${savedCars.length ? `<div class="grid grid-3">${savedCars.map(carCardHTML).join('')}</div>` : `<div class="card empty-state">Your Saved Garage is empty.</div>`}`;
+    }
+
+    function viewProfile() {
+      if (!state.session) return viewBuyerAuth();
+      const s = state.session;
+      return `<div style="max-width:620px;margin:0 auto;"><div class="card card-pad"><h2 style="margin-top:0;">My Buyer Profile</h2><form onsubmit="updateMyProfile(event)"><div class="field"><label>Full Name</label><input class="input" name="name" required value="${escapeHtml(s.name)}" /></div><div class="field"><label>Email</label><input class="input" disabled value="${escapeHtml(s.email)}" /></div><div class="field"><label>Phone</label><input class="input" name="phone" required value="${escapeHtml(s.phone || '')}" /></div><div class="field"><label>Address</label><input class="input" name="address" value="${escapeHtml(s.address || '')}" /></div><button class="btn btn-primary" type="submit">Save Profile Changes</button></form></div></div>`;
+    }
+
+    async function updateMyProfile(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target), name = fd.get('name').trim(), phone = fd.get('phone').trim(), address = fd.get('address').trim();
+      if (isCloudMode && sb) { const { error } = await sb.from('profiles').update({ full_name: name, phone, address }).eq('id', state.session.id); if (error) return toast(error.message, 'error'); await syncFromSupabase(); }
+      else { const c = state.db.customers.find(x => x.id === state.session.id); if (c) { c.name = name; c.phone = phone; c.address = address; saveLocalDB(); } saveLocalSession({ ...state.session, name, phone, address }); }
+      toast('Profile updated!', 'success'); render();
+    }
+
+    function viewCVehicles() {
+      const f = state.filters;
+      return `
+        <div class="section-head"><div><h2>Vehicle Showroom</h2><p>Browse ${state.db.vehicles.length} vehicles. Filter by type, fuel, max budget, or compare up to 3 models.</p></div></div>
+        <div class="card card-pad" style="margin-bottom:22px;">
+          <div class="grid grid-4" style="gap:12px;">
+            <input class="input" placeholder="Search make, model, year..." value="${escapeHtml(f.search)}" oninput="state.filters.search=this.value;renderVehicleGrid();" />
+            <select class="input" onchange="state.filters.body=this.value;renderVehicleGrid();">${['All','Sedan','SUV','Coupe','Electric'].map(o => `<option ${f.body===o?'selected':''}>${o}</option>`).join('')}</select>
+            <select class="input" onchange="state.filters.fuel=this.value;renderVehicleGrid();">${['All','Petrol','Hybrid','Electric'].map(o => `<option ${f.fuel===o?'selected':''}>${o}</option>`).join('')}</select>
+            <select class="input" onchange="state.filters.sort=this.value;renderVehicleGrid();"><option value="newest" ${f.sort==='newest'?'selected':''}>Sort: Newest First</option><option value="price-asc" ${f.sort==='price-asc'?'selected':''}>Price: Low to High</option><option value="price-desc" ${f.sort==='price-desc'?'selected':''}>Price: High to Low</option></select>
+          </div>
+          <div style="display:flex;gap:12px;margin-top:12px;flex-wrap:wrap;align-items:center;">
+            <input class="input" style="max-width:220px;" type="number" placeholder="Max Budget ($)" value="${escapeHtml(f.maxPrice)}" oninput="state.filters.maxPrice=this.value;renderVehicleGrid();" />
+            <select class="input" style="max-width:200px;" onchange="state.filters.status=this.value;renderVehicleGrid();">${['All','Available','Reserved','Sold'].map(o => `<option value="${o}" ${f.status===o?'selected':''}>${o==='All'?'All Statuses':o}</option>`).join('')}</select>
+          </div>
+        </div>
+        <div id="vehicleGridContainer"></div>`;
+    }
+
+    function renderVehicleGrid() {
+      const container = document.getElementById('vehicleGridContainer');
+      if (!container) return;
+      const f = state.filters, maxP = Number(f.maxPrice || 0);
+      let list = state.db.vehicles.filter(v => {
+        const q = f.search.toLowerCase();
+        return (!q || `${v.make} ${v.model} ${v.year} ${v.branch}`.toLowerCase().includes(q)) && (f.body === 'All' || v.body === f.body) && (f.fuel === 'All' || v.fuel === f.fuel) && (f.status === 'All' || v.status === f.status) && (!maxP || v.price <= maxP);
+      });
+      if (f.sort === 'price-asc') list.sort((a, b) => a.price - b.price);
+      else if (f.sort === 'price-desc') list.sort((a, b) => b.price - a.price);
+      else list.sort((a, b) => b.year - a.year);
+      container.innerHTML = list.length ? `<div class="grid grid-3">${list.map(carCardHTML).join('')}</div>` : `<div class="card empty-state">No vehicles match your filter criteria.</div>`;
+      applyRevealAndCounters();
+    }
+
+    function viewVehicleDetails() {
+      const v = state.db.vehicles.find(x => x.id === state.selectedVehicleId) || state.db.vehicles[0];
+      if (!v) return `<div class="card empty-state">Vehicle not found.</div>`;
+      const badgeClass = v.status === 'Available' ? 'badge-available' : (v.status === 'Reserved' ? 'badge-reserved' : 'badge-sold');
+      const activeColor = state.previewColor || v.color;
+      const swatches = [v.color, '#0f172a', '#2563eb', '#dc2626', '#0f766e', '#94a3b8'].filter((c, i, a) => a.indexOf(c) === i);
+      return `
+        <div style="margin-bottom:16px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+          <button class="btn btn-secondary btn-sm" onclick="navigate('c-vehicles')">&larr; Back to Showroom</button>
+          <div style="display:flex;gap:8px;"><button class="btn btn-secondary btn-sm" onclick="toggleFavorite('${escapeHtml(v.id)}')">${state.db.savedIds.includes(v.id) ? '&#9829; Saved' : '&#9825; Save'}</button><button class="btn btn-secondary btn-sm" onclick="toggleCompare('${escapeHtml(v.id)}')">${state.compareIds.includes(v.id) ? '&#10003; Comparing' : '+ Compare'}</button></div>
+        </div>
+        <div class="card card-pad"><div class="grid grid-2" style="align-items:center;">
+          <div>
+            <div class="car-thumb" style="height:310px;border-radius:14px;border:1px solid var(--line);">
+              <span class="year-pill">${v.year}</span><span class="badge ${badgeClass}">${escapeHtml(v.status)}</span>
+              ${carMediaHTML(v, activeColor, state.previewMirrored)}
+              <div class="thumb-tools"><button class="icon-chip" onclick="state.previewMirrored=!state.previewMirrored;render();">&#8644; Flip Angle</button></div>
+            </div>
+            ${!v.imageUrl ? `<div class="swatch-row"><span style="font-size:.78rem;color:var(--muted);font-weight:600;">Studio Finish Preview:</span>${swatches.map(c => `<button class="swatch-btn ${activeColor===c?'active':''}" style="background:${escapeHtml(c)};" onclick="state.previewColor='${escapeHtml(c)}';render();"></button>`).join('')}</div>` : ''}
+          </div>
+          <div>
+            <div style="font-size:.82rem;color:var(--muted);font-weight:600;">STOCK #${escapeHtml(v.id)} &bull; VIN ${escapeHtml(v.vin)}</div>
+            <h1 style="margin:6px 0;font-size:2rem;">${v.year} ${escapeHtml(v.make)} ${escapeHtml(v.model)}</h1>
+            <div class="car-price" style="font-size:1.85rem;">${money(v.price)}</div>
+            <p style="color:#475569;margin-bottom:20px;">${escapeHtml(v.description)}</p>
+            <div class="grid grid-2" style="gap:10px;margin-bottom:22px;font-size:.88rem;">
+              <div><strong>Body Style:</strong> ${escapeHtml(v.body)}</div><div><strong>Fuel Type:</strong> ${escapeHtml(v.fuel)}</div>
+              <div><strong>Transmission:</strong> ${escapeHtml(v.transmission)}</div><div><strong>Mileage:</strong> ${Number(v.mileage).toLocaleString()} mi</div>
+              <div><strong>Listed Color:</strong> ${escapeHtml(v.colorName)}</div><div><strong>Location:</strong> ${escapeHtml(v.branch)}</div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn btn-secondary" ${v.status==='Sold'?'disabled':''} onclick="navigate('book-car','${escapeHtml(v.id)}')">Book Test Drive</button>
+              <button class="btn btn-primary" ${v.status==='Sold'?'disabled':''} onclick="navigate('buy-car','${escapeHtml(v.id)}')">Buy / Financing Calculator</button>
+            </div>
+          </div>
+        </div></div>`;
+    }
+
+    function viewBookCar() {
+      if (!state.session) { toast('Please sign in as a Buyer to book a test drive.', 'info'); return viewBuyerAuth(); }
+      const bookable = state.db.vehicles.filter(x => x.status !== 'Sold');
+      if (!bookable.length) return `<div class="card empty-state">No available vehicles to book right now.</div>`;
+      const v = bookable.find(x => x.id === state.selectedVehicleId) || bookable[0], minDate = new Date().toISOString().slice(0, 10);
+      return `
+        <div style="max-width:740px;margin:0 auto;">
+          <button class="btn btn-secondary btn-sm" style="margin-bottom:14px;" onclick="navigate('c-details','${escapeHtml(v.id)}')">&larr; Back to Vehicle</button>
+          <div class="card card-pad"><h2 style="margin-top:0;">Book Test Drive &amp; Reservation</h2>
+            <form onsubmit="submitBooking(event)">
+              <div class="field"><label>Select Vehicle</label><select class="input" name="vehicleId">${bookable.map(car => `<option value="${escapeHtml(car.id)}" ${car.id===v.id?'selected':''}>${car.year} ${escapeHtml(car.make)} ${escapeHtml(car.model)} — ${money(car.price)}</option>`).join('')}</select></div>
+              <div class="grid grid-2">
+                <div class="field"><label>Preferred Date</label><input class="input" type="date" name="date" required min="${minDate}" value="${minDate}" /></div>
+                <div class="field"><label>Time Slot</label><select class="input" name="timeSlot"><option>09:30 AM</option><option>11:00 AM</option><option>02:00 PM</option><option>04:30 PM</option></select></div>
+                <div class="field"><label>Showroom Branch</label><select class="input" name="branch"><option ${v.branch==='Central Showroom'?'selected':''}>Central Showroom</option><option ${v.branch==='Flagship Hub'?'selected':''}>Flagship Hub</option><option ${v.branch==='Northside Lot'?'selected':''}>Northside Lot</option></select></div>
+                <div class="field"><label>Contact Phone</label><input class="input" type="tel" name="phone" required value="${escapeHtml(state.session.phone || '+65 9123 4567')}" /></div>
+              </div>
+              <div class="field"><label>Notes / Trade-In Details</label><textarea class="input" rows="3" name="notes" placeholder="e.g., Trade-in evaluation..."></textarea></div>
+              <button class="btn btn-primary" type="submit">Confirm Booking Request</button>
+            </form>
+          </div>
+        </div>`;
+    }
+
+    async function submitBooking(e) {
+      e.preventDefault();
+      const fd = new FormData(e.target), vehicleId = fd.get('vehicleId'), date = fd.get('date'), timeSlot = fd.get('timeSlot');
+      if (state.db.bookings.some(b => b.vehicleId === vehicleId && b.date === date && b.timeSlot === timeSlot && ['Pending', 'Confirmed'].includes(b.status))) {
+        return toast('That vehicle already has an appointment for that date & time slot.', 'error');
+      }
+      const id = 'BK-' + Math.floor(2050 + Math.random() * 7900);
+      if (isCloudMode && sb) {
+        const { error } = await sb.from('bookings').insert({ id, vehicle_id: vehicleId, customer_id: state.session.id, customer_name: state.session.name, booking_date: date, time_slot: timeSlot, branch: fd.get('branch'), phone: fd.get('phone'), notes: fd.get('notes'), status: 'Pending' });
+        if (error) return toast(error.message.includes('unique') ? 'Time slot already reserved!' : error.message, 'error');
+        await syncFromSupabase();
+      } else {
+        state.db.bookings.unshift({ id, vehicleId, customerId: state.session.id, customerName: state.session.name, date, timeSlot, branch: fd.get('branch'), phone: fd.get('phone'), notes: fd.get('notes'), status: 'Pending', createdAt: new Date().toISOString().slice(0, 10) });
+        saveLocalDB();
+      }
+      toast('Test drive booking submitted!', 'success'); navigate('book-record');
+    }
+
+    function viewBuyCar() {
+      if (!state.session) { toast('Please sign in as a Buyer to complete a purchase.', 'info'); return viewBuyerAuth(); }
+      const v = state.db.vehicles.find(x => x.id === state.selectedVehicleId);
+      if (!v || v.status === 'Sold') return `<div class="card empty-state">This vehicle is no longer available.</div>`;
+      const defaultDown = Math.round(v.price * 0.2);
+      return `
+        <div style="max-width:860px;margin:0 auto;">
+          <button class="btn btn-secondary btn-sm" style="margin-bottom:14px;" onclick="navigate('c-details','${escapeHtml(v.id)}')">&larr; Back to Vehicle</button>
+          <div class="card card-pad">
+            <h2 style="margin-top:0;">Purchase &amp; Financing Checkout</h2>
+            <p style="color:var(--muted);">Vehicle: <strong>${v.year} ${escapeHtml(v.make)} ${escapeHtml(v.model)}</strong> — List Price: <strong>${money(v.price)}</strong></p>
+            <form id="buyForm" onsubmit="submitPurchase(event,'${escapeHtml(v.id)}')">
+              <div class="grid grid-2">
+                <div class="field"><label>Payment Method</label><select class="input" name="method" id="payMethod" onchange="updateFinanceCalc(${v.price})"><option value="Auto Loan">Auto Loan Financing (3.5% APR)</option><option value="Full Cash">Full Cash / Bank Transfer</option></select></div>
+                <div class="field"><label>Loan Tenure (Months)</label><select class="input" name="tenure" id="payTenure" onchange="updateFinanceCalc(${v.price})"><option value="36">36 Months</option><option value="48">48 Months</option><option value="60" selected>60 Months</option><option value="72">72 Months</option></select></div>
+                <div class="field"><label>Down Payment ($)</label><input class="input" type="number" name="downPayment" id="payDown" min="0" max="${v.price}" value="${defaultDown}" oninput="document.getElementById('payDownRange').value=this.value;updateFinanceCalc(${v.price})" /><input type="range" id="payDownRange" min="0" max="${v.price}" step="500" value="${defaultDown}" oninput="document.getElementById('payDown').value=this.value;updateFinanceCalc(${v.price})" /></div>
+                <div class="field"><label>Trade-In Allowance ($)</label><input class="input" type="number" name="tradeIn" id="payTrade" min="0" max="${v.price}" value="0" oninput="updateFinanceCalc(${v.price})" /></div>
+              </div>
+              <div class="card card-pad" style="background:var(--surface-2);margin:10px 0 18px;" id="financeSummary">${calcFinanceHTML(v.price, defaultDown, 0, 60, 'Auto Loan')}</div>
+              <button class="btn btn-success" type="submit">Complete Vehicle Purchase</button>
+            </form>
+          </div>
+        </div>`;
+    }
+
+    function calcFinanceHTML(price, down, trade, months, method) {
+      const principal = Math.max(0, price - down - trade);
+      if (method === 'Full Cash') return `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;"><div><div style="font-size:.82rem;color:var(--muted);">Total Balance Due</div><div style="font-size:1.5rem;font-weight:800;color:var(--primary);">${money(Math.max(0, price - trade))}</div></div><span class="badge badge-available">Zero Interest</span></div>`;
+      const r = 0.035 / 12, monthly = principal === 0 ? 0 : Math.round((principal * r) / (1 - Math.pow(1 + r, -months)));
+      return `<div class="grid grid-4"><div><div style="font-size:.78rem;color:var(--muted);">Financed Principal</div><strong>${money(principal)}</strong></div><div><div style="font-size:.78rem;color:var(--muted);">Est. Monthly</div><strong style="color:var(--primary);font-size:1.2rem;">${money(monthly)}/mo</strong></div><div><div style="font-size:.78rem;color:var(--muted);">Total Interest</div><strong>${money(Math.max(0, (monthly * months) - principal))}</strong></div><div><div style="font-size:.78rem;color:var(--muted);">Rate &amp; Term</div><strong>3.5% &bull; ${months} mo</strong></div></div>`;
+    }
+
+    function updateFinanceCalc(price) {
+      const method = document.getElementById('payMethod').value, tenureEl = document.getElementById('payTenure');
+      tenureEl.disabled = method === 'Full Cash';
+      document.getElementById('financeSummary').innerHTML = calcFinanceHTML(price, Number(document.getElementById('payDown').value || 0), Number(document.getElementById('payTrade').value || 0), Number(tenureEl.value), method);
+    }
+
+    async function submitPurchase(e, vehicleId) {
+      e.preventDefault();
+      const v = state.db.vehicles.find(x => x.id === vehicleId), fd = new FormData(e.target);
+      const method = fd.get('method'), tenure = Number(fd.get('tenure') || 60), down = Number(fd.get('downPayment') || 0), trade = Number(fd.get('tradeIn') || 0);
+      const principal = Math.max(0, v.price - down - trade), r = 0.035 / 12;
+      const monthly = method === 'Full Cash' ? 0 : Math.round((principal * r) / (1 - Math.pow(1 + r, -tenure)));
+      const planLabel = method === 'Full Cash' ? 'Full Cash' : `Auto Loan (${tenure} mo)`;
+      if (isCloudMode && sb) {
+        const { error } = await sb.rpc('complete_vehicle_purchase', { p_vehicle_id: v.id, p_payment_method: planLabel, p_down_payment: down, p_trade_in: trade, p_monthly_installment: monthly });
+        if (error) return toast(error.message, 'error');
+        await syncFromSupabase();
+      } else {
+        v.status = 'Sold';
+        state.db.sales.unshift({ id: nextId('INV', state.db.sales), vehicleId: v.id, vehicleLabel: `${v.year} ${v.make} ${v.model}`, customerId: state.session.id, customerName: state.session.name, paymentMethod: planLabel, downPayment: down, tradeIn: trade, totalAmount: v.price, monthlyInstallment: monthly, date: new Date().toISOString().slice(0, 10) });
+        saveLocalDB();
+      }
+      toast('Congratulations! Vehicle purchase confirmed.', 'success'); navigate('book-record');
+    }
+
+    function viewBookRecord() {
+      if (state.session?.type !== 'customer') return viewBuyerAuth();
+      const id = state.session.id, myBookings = state.db.bookings.filter(b => b.customerId === id), mySales = state.db.sales.filter(s => s.customerId === id);
+      return `
+        <div class="section-head"><div><h2>My Bookings &amp; Order History</h2><p>Track test drives or print official purchase receipts.</p></div><button class="btn btn-primary" onclick="navigate('c-vehicles')">Book Another Vehicle</button></div>
+        <div class="card card-pad" style="margin-bottom:24px;"><h3 style="margin-top:0;">Test-Drive Bookings</h3>
+          ${myBookings.length ? `<div class="table-wrap"><table><thead><tr><th>Booking ID</th><th>Vehicle</th><th>Date &amp; Time</th><th>Branch</th><th>Status</th><th>Action</th></tr></thead><tbody>${myBookings.map(b => { const v = state.db.vehicles.find(x => x.id === b.vehicleId); return `<tr><td><strong>${escapeHtml(b.id)}</strong></td><td>${v ? `${v.year} ${escapeHtml(v.make)} ${escapeHtml(v.model)}` : escapeHtml(b.vehicleId)}</td><td>${escapeHtml(b.date)} at ${escapeHtml(b.timeSlot)}</td><td>${escapeHtml(b.branch)}</td><td><span class="badge badge-${b.status.toLowerCase()}">${escapeHtml(b.status)}</span></td><td>${b.status!=='Cancelled'&&b.status!=='Completed'?`<button class="btn btn-danger btn-sm" onclick="cancelBooking('${escapeHtml(b.id)}')">Cancel</button>`:'—'}</td></tr>`; }).join('')}</tbody></table></div>` : `<div class="empty-state">No test-drive bookings yet.</div>`}
+        </div>
+        <div class="card card-pad"><h3 style="margin-top:0;">Completed Purchases &amp; Invoices</h3>
+          ${mySales.length ? `<div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Vehicle</th><th>Payment Plan</th><th>Total Price</th><th>Date</th><th>Receipt</th></tr></thead><tbody>${mySales.map(s => `<tr><td><strong>${escapeHtml(s.id)}</strong></td><td>${escapeHtml(s.vehicleLabel)}</td><td>${escapeHtml(s.paymentMethod)} ${s.monthlyInstallment ? `(${money(s.monthlyInstallment)}/mo)` : ''}</td><td><strong>${money(s.totalAmount)}</strong></td><td>${escapeHtml(s.date)}</td><td><button class="btn btn-secondary btn-sm" onclick="openReceipt('${escapeHtml(s.id)}')">View / Print</button></td></tr>`).join('')}</tbody></table></div>` : `<div class="empty-state">No vehicle purchases recorded yet.</div>`}
+        </div>`;
+    }
+
+    function openReceipt(saleId) {
+      const s = state.db.sales.find(x => x.id === saleId);
+      if (!s) return;
+      openModal(`Invoice ${s.id}`, `<div style="border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px;"><div style="display:flex;justify-content:space-between;margin-bottom:14px;"><div><strong>ApexDrive Motors</strong><br><span style="font-size:.82rem;color:var(--muted);">Official Purchase Receipt</span></div><div style="text-align:right;"><strong>${escapeHtml(s.id)}</strong><br><span style="font-size:.82rem;color:var(--muted);">${escapeHtml(s.date)}</span></div></div><hr style="border:none;border-top:1px solid var(--line);margin:12px 0;" /><p style="margin:6px 0;"><strong>Buyer:</strong> ${escapeHtml(s.customerName)}</p><p style="margin:6px 0;"><strong>Vehicle:</strong> ${escapeHtml(s.vehicleLabel)}</p><p style="margin:6px 0;"><strong>Payment Plan:</strong> ${escapeHtml(s.paymentMethod)}</p><p style="margin:6px 0;"><strong>Down Payment:</strong> ${money(s.downPayment)}</p><p style="margin:6px 0;"><strong>Trade-In Credit:</strong> ${money(s.tradeIn)}</p><p style="margin:10px 0 0;font-size:1.15rem;"><strong>Total Vehicle Price:</strong> <span style="color:var(--primary);">${money(s.totalAmount)}</span></p></div><div class="no-print" style="display:flex;justify-content:flex-end;gap:10px;"><button class="btn btn-secondary" onclick="closeModal()">Close</button><button class="btn btn-primary" onclick="window.print()">Print Receipt</button></div>`);
+    }
+
+    async function cancelBooking(id) {
+      if (isCloudMode && sb) { const { error } = await sb.from('bookings').update({ status: 'Cancelled' }).eq('id', id); if (error) return toast(error.message, 'error'); await syncFromSupabase(); }
+      else { const b = state.db.bookings.find(x => x.id === id); if (b) { b.status = 'Cancelled'; saveLocalDB(); } }
+      toast('Booking cancelled.'); render();
+    }
+
+    function requireStaff() { return state.session?.type === 'staff'; }
+    function exportCSV(filename, headers, rows) {
+      const csv = [headers, ...rows].map(r => r.map(c => `"${String(c ?? '').replace(/"/g, '""')}"`).join(',')).join('\n');
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' })); a.download = filename; a.click();
+    }
+
+    function viewStaffHome() {
+      if (!requireStaff()) return viewMasterAuth();
+      const avail = state.db.vehicles.filter(v => v.status === 'Available'), reserved = state.db.vehicles.filter(v => v.status === 'Reserved'), sold = state.db.vehicles.filter(v => v.status === 'Sold');
+      const invValue = avail.reduce((s, v) => s + Number(v.price), 0), revenue = state.db.sales.reduce((s, x) => s + Number(x.totalAmount), 0), pending = state.db.bookings.filter(b => b.status === 'Pending').length, maxUnits = Math.max(1, state.db.vehicles.length);
+      return `
+        <div class="section-head"><div><h2>Master Admin Dashboard</h2><p>Full control over showroom inventory, test-drive bookings, buyers &amp; HR.</p></div><div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="btn btn-primary" onclick="openVehicleForm()">+ Add Vehicle</button><button class="btn btn-secondary" onclick="navigate('s-details')">Manage Bookings</button></div></div>
+        <div class="grid grid-4" style="margin-bottom:24px;">
+          <div class="card kpi-card"><div class="kpi-label">Available Units</div><div class="kpi-value" data-count="${avail.length}">${avail.length}</div><div class="kpi-note">Out of ${state.db.vehicles.length} total cars</div></div>
+          <div class="card kpi-card"><div class="kpi-label">Available Stock Value</div><div class="kpi-value" data-count="${invValue}" data-money="1">${money(invValue)}</div><div class="kpi-note">Active showroom valuation</div></div>
+          <div class="card kpi-card"><div class="kpi-label">Pending Bookings</div><div class="kpi-value" data-count="${pending}">${pending}</div><div class="kpi-note">${state.db.bookings.length} total appointments</div></div>
+          <div class="card kpi-card"><div class="kpi-label">Total Sales Revenue</div><div class="kpi-value" data-count="${revenue}" data-money="1">${money(revenue)}</div><div class="kpi-note">${state.db.sales.length} completed deals</div></div>
+        </div>
+        <div class="grid grid-2">
+          <div class="card card-pad"><h3 style="margin-top:0;">Inventory Status Breakdown</h3>
+            <div class="bar-row"><div class="bar-label">Available (${avail.length})</div><div class="bar-track"><div class="bar-fill" style="width:${(avail.length/maxUnits)*100}%;background:var(--success);"></div></div></div>
+            <div class="bar-row"><div class="bar-label">Reserved (${reserved.length})</div><div class="bar-track"><div class="bar-fill" style="width:${(reserved.length/maxUnits)*100}%;background:var(--warning);"></div></div></div>
+            <div class="bar-row"><div class="bar-label">Sold (${sold.length})</div><div class="bar-track"><div class="bar-fill" style="width:${(sold.length/maxUnits)*100}%;background:var(--danger);"></div></div></div>
+            <hr style="border:none;border-top:1px solid var(--line);margin:16px 0;" />
+            <div class="grid grid-2" style="gap:10px;"><button class="btn btn-secondary" onclick="navigate('s-vehicles')">Inventory CRUD</button><button class="btn btn-secondary" onclick="navigate('s-details')">Sales &amp; Bookings</button><button class="btn btn-secondary" onclick="navigate('s-customers')">Buyers (${state.db.customers.length})</button><button class="btn btn-secondary" onclick="navigate('s-hr')">HR &amp; Staff (${state.db.staff.length})</button></div>
+          </div>
+          <div class="card card-pad"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;"><h3 style="margin:0;">Recent Bookings</h3><button class="btn btn-ghost btn-sm" onclick="navigate('s-details')">View All &rarr;</button></div>
+            <div class="table-wrap"><table><thead><tr><th>ID</th><th>Buyer</th><th>Date</th><th>Status</th></tr></thead><tbody>${state.db.bookings.slice(0, 5).map(b => `<tr><td><strong>${escapeHtml(b.id)}</strong></td><td>${escapeHtml(b.customerName)}</td><td>${escapeHtml(b.date)}</td><td><span class="badge badge-${b.status.toLowerCase()}">${escapeHtml(b.status)}</span></td></tr>`).join('')}</tbody></table></div>
+          </div>
+        </div>`;
+    }
+
+    function viewSVehicles() {
+      if (!requireStaff()) return viewMasterAuth();
+      return `
+        <div class="section-head"><div><h2>Vehicle Inventory Management</h2><p>Add, edit, attach photo URLs, update status, or export CSV.</p></div><div style="display:flex;gap:10px;"><button class="btn btn-secondary" onclick="exportInventoryCSV()">Export CSV</button><button class="btn btn-primary" onclick="openVehicleForm()">+ Add New Vehicle</button></div></div>
+        <div class="card card-pad"><div class="table-wrap"><table><thead><tr><th>Stock ID</th><th>Vehicle</th><th>Body / Fuel</th><th>Branch</th><th>Price</th><th>Status</th><th>Actions</th></tr></thead><tbody>${state.db.vehicles.map(v => `<tr><td><strong>${escapeHtml(v.id)}</strong></td><td><strong>${v.year} ${escapeHtml(v.make)} ${escapeHtml(v.model)}</strong><br><span style="font-size:.78rem;color:var(--muted);">${escapeHtml(v.colorName)} &bull; ${Number(v.mileage).toLocaleString()} mi</span></td><td>${escapeHtml(v.body)} / ${escapeHtml(v.fuel)}</td><td>${escapeHtml(v.branch)}</td><td><strong>${money(v.price)}</strong></td><td><span class="badge badge-${v.status.toLowerCase()}">${escapeHtml(v.status)}</span></td><td><div style="display:flex;gap:6px;"><button class="btn btn-secondary btn-sm" onclick="openVehicleForm('${escapeHtml(v.id)}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteVehicle('${escapeHtml(v.id)}')">Remove</button></div></td></tr>`).join('')}</tbody></table></div></div>`;
+    }
+    function exportInventoryCSV() { exportCSV('apexdrive_inventory.csv', ['ID','Make','Model','Year','Body','Fuel','Mileage','Price','Status','Branch','VIN'], state.db.vehicles.map(v => [v.id,v.make,v.model,v.year,v.body,v.fuel,v.mileage,v.price,v.status,v.branch,v.vin])); }
+
+    function openVehicleForm(id = null) {
+      const v = id ? state.db.vehicles.find(x => x.id === id) : null;
+      openModal(v ? `Edit ${v.make} ${v.model}` : 'Add New Vehicle', `
+        <form onsubmit="saveVehicle(event,'${escapeHtml(id || '')}')">
+          <div class="grid grid-2">
+            <div class="field"><label>Make</label><input class="input" name="make" required value="${escapeHtml(v?.make || '')}" placeholder="Toyota" /></div>
+            <div class="field"><label>Model</label><input class="input" name="model" required value="${escapeHtml(v?.model || '')}" placeholder="Supra GR" /></div>
+            <div class="field"><label>Year</label><input class="input" type="number" name="year" required value="${v?.year || 2025}" /></div>
+            <div class="field"><label>Price ($)</label><input class="input" type="number" name="price" required value="${v?.price || 45000}" /></div>
+            <div class="field"><label>Body Style</label><select class="input" name="body">${['Sedan','SUV','Coupe','Electric'].map(o => `<option ${v?.body===o?'selected':''}>${o}</option>`).join('')}</select></div>
+            <div class="field"><label>Fuel Type</label><select class="input" name="fuel">${['Petrol','Hybrid','Electric'].map(o => `<option ${v?.fuel===o?'selected':''}>${o}</option>`).join('')}</select></div>
+            <div class="field"><label>Transmission</label><input class="input" name="transmission" required value="${escapeHtml(v?.transmission || 'Automatic')}" /></div>
+            <div class="field"><label>Mileage</label><input class="input" type="number" name="mileage" required value="${v?.mileage ?? 0}" /></div>
+            <div class="field"><label>Color Name</label><input class="input" name="colorName" required value="${escapeHtml(v?.colorName || 'Metallic Blue')}" /></div>
+            <div class="field"><label>Swatch Color</label><input class="input" type="color" name="color" value="${escapeHtml(v?.color || '#2563eb')}" style="height:42px;padding:4px;" /></div>
+            <div class="field"><label>Branch</label><select class="input" name="branch">${['Central Showroom','Flagship Hub','Northside Lot'].map(o => `<option ${v?.branch===o?'selected':''}>${o}</option>`).join('')}</select></div>
+            <div class="field"><label>Status</label><select class="input" name="status">${['Available','Reserved','Sold'].map(o => `<option ${v?.status===o?'selected':''}>${o}</option>`).join('')}</select></div>
+          </div>
+          <div class="field"><label>Photo URL (Optional)</label><input class="input" type="url" name="imageUrl" value="${escapeHtml(v?.imageUrl || '')}" placeholder="https://..." /></div>
+          <div class="field"><label>VIN</label><input class="input" name="vin" required value="${escapeHtml(v?.vin || 'VIN' + Math.floor(100000000 + Math.random()*899999999))}" /></div>
+          <div class="field"><label>Description</label><textarea class="input" rows="2" name="description">${escapeHtml(v?.description || '')}</textarea></div>
+          <div style="display:flex;gap:10px;justify-content:flex-end;"><button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">${v ? 'Save Changes' : 'Add Vehicle'}</button></div>
+        </form>`);
+    }
+
+    async function saveVehicle(e, id) {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const data = { id: id || nextId('CAR', state.db.vehicles), make: fd.get('make').trim(), model: fd.get('model').trim(), year: Number(fd.get('year')), price: Number(fd.get('price')), body: fd.get('body'), fuel: fd.get('fuel'), transmission: fd.get('transmission').trim(), mileage: Number(fd.get('mileage')), colorName: fd.get('colorName').trim(), color: fd.get('color'), branch: fd.get('branch'), status: fd.get('status'), imageUrl: (fd.get('imageUrl') || '').trim(), vin: fd.get('vin').trim(), description: fd.get('description').trim() };
+      if (isCloudMode && sb) {
+        const row = mapVehicleToDB(data);
+        const { error } = id ? await sb.from('vehicles').update(row).eq('id', id) : await sb.from('vehicles').insert(row);
+        if (error) return toast(error.message, 'error');
+        await syncFromSupabase();
+      } else {
+        if (id) { const idx = state.db.vehicles.findIndex(x => x.id === id); if (idx >= 0) state.db.vehicles[idx] = data; } else state.db.vehicles.unshift(data);
+        saveLocalDB();
+      }
+      toast(id ? 'Vehicle updated.' : 'New vehicle added.', 'success'); closeModal(); render();
+    }
+
+    async function deleteVehicle(id) {
+      if (!confirm('Remove this vehicle from inventory?')) return;
+      if (isCloudMode && sb) { const { error } = await sb.from('vehicles').delete().eq('id', id); if (error) return toast(error.message, 'error'); await syncFromSupabase(); }
+      else { state.db.vehicles = state.db.vehicles.filter(v => v.id !== id); saveLocalDB(); }
+      toast('Vehicle removed.'); render();
+    }
+
+    function viewSDetails() {
+      if (!requireStaff()) return viewMasterAuth();
+      return `
+        <div class="section-head"><div><h2>Bookings &amp; Sales Records</h2><p>Approve test drives and export sales revenue reports.</p></div><button class="btn btn-secondary" onclick="exportSalesCSV()">Export Sales CSV</button></div>
+        <div class="card card-pad" style="margin-bottom:24px;"><h3 style="margin-top:0;">Buyer Test-Drive Bookings</h3><div class="table-wrap"><table><thead><tr><th>ID</th><th>Buyer</th><th>Vehicle</th><th>Appointment &amp; Notes</th><th>Status</th><th>Update</th></tr></thead><tbody>${state.db.bookings.map(b => { const v = state.db.vehicles.find(x => x.id === b.vehicleId); return `<tr><td><strong>${escapeHtml(b.id)}</strong></td><td>${escapeHtml(b.customerName)}<br><span style="font-size:.78rem;color:var(--muted);">${escapeHtml(b.phone)}</span></td><td>${v ? `${v.year} ${escapeHtml(v.make)} ${escapeHtml(v.model)}` : escapeHtml(b.vehicleId)}</td><td>${escapeHtml(b.date)} &bull; ${escapeHtml(b.timeSlot)} (${escapeHtml(b.branch)})<br><span style="font-size:.78rem;color:var(--muted);">${escapeHtml(b.notes || 'No notes')}</span></td><td><span class="badge badge-${b.status.toLowerCase()}">${escapeHtml(b.status)}</span></td><td><select class="input" style="padding:5px 8px;font-size:.8rem;" onchange="updateBookingStatus('${escapeHtml(b.id)}',this.value)">${['Pending','Confirmed','Completed','Cancelled'].map(st => `<option ${b.status===st?'selected':''}>${st}</option>`).join('')}</select></td></tr>`; }).join('')}</tbody></table></div></div>
+        <div class="card card-pad"><h3 style="margin-top:0;">Sales Transactions</h3><div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Vehicle</th><th>Buyer</th><th>Payment Method</th><th>Amount</th><th>Date</th></tr></thead><tbody>${state.db.sales.map(s => `<tr><td><strong>${escapeHtml(s.id)}</strong></td><td>${escapeHtml(s.vehicleLabel)}</td><td>${escapeHtml(s.customerName)}</td><td>${escapeHtml(s.paymentMethod)}</td><td><strong>${money(s.totalAmount)}</strong></td><td>${escapeHtml(s.date)}</td></tr>`).join('')}</tbody></table></div></div>`;
+    }
+    function exportSalesCSV() { exportCSV('apexdrive_sales.csv', ['Invoice','Vehicle','Buyer','Payment Method','Down Payment','Trade-In','Total Amount','Date'], state.db.sales.map(s => [s.id,s.vehicleLabel,s.customerName,s.paymentMethod,s.downPayment,s.tradeIn,s.totalAmount,s.date])); }
+
+    async function updateBookingStatus(id, status) {
+      if (isCloudMode && sb) { const { error } = await sb.from('bookings').update({ status }).eq('id', id); if (error) return toast(error.message, 'error'); await syncFromSupabase(); }
+      else { const b = state.db.bookings.find(x => x.id === id); if (b) { b.status = status; saveLocalDB(); } }
+      toast(`Booking ${id} marked as ${status}.`, 'success'); render();
+    }
+
+    function viewSCustomers() {
+      if (!requireStaff()) return viewMasterAuth();
+      return `<div class="section-head"><div><h2>Buyer Directory</h2><p>Manage registered dealership buyers.</p></div>${!isCloudMode ? `<button class="btn btn-primary" onclick="openCustomerForm()">+ Add Buyer</button>` : ''}</div><div class="card card-pad"><div class="table-wrap"><table><thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Address</th><th>Actions</th></tr></thead><tbody>${state.db.customers.map(c => `<tr><td><strong>${escapeHtml(String(c.id).slice(0, 10))}</strong></td><td>${escapeHtml(c.name)}</td><td>${escapeHtml(c.email)}</td><td>${escapeHtml(c.phone)}</td><td>${escapeHtml(c.address || '—')}</td><td><div style="display:flex;gap:6px;"><button class="btn btn-secondary btn-sm" onclick="openCustomerForm('${escapeHtml(c.id)}')">Edit</button>${!isCloudMode ? `<button class="btn btn-danger btn-sm" onclick="deleteCustomer('${escapeHtml(c.id)}')">Remove</button>` : ''}</div></td></tr>`).join('')}</tbody></table></div></div>`;
+    }
+
+    function openCustomerForm(id = null) {
+      const c = id ? state.db.customers.find(x => x.id === id) : null;
+      openModal(c ? 'Edit Buyer' : 'Add Buyer', `<form onsubmit="saveCustomer(event,'${escapeHtml(id || '')}')"><div class="field"><label>Full Name</label><input class="input" name="name" required value="${escapeHtml(c?.name || '')}" /></div><div class="field"><label>Email</label><input class="input" type="email" name="email" ${isCloudMode && c ? 'disabled' : 'required'} value="${escapeHtml(c?.email || '')}" /></div><div class="field"><label>Phone</label><input class="input" name="phone" required value="${escapeHtml(c?.phone || '')}" /></div><div class="field"><label>Address</label><input class="input" name="address" value="${escapeHtml(c?.address || '')}" /></div><div style="display:flex;gap:10px;justify-content:flex-end;"><button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">Save Buyer</button></div></form>`);
+    }
+
+    async function saveCustomer(e, id) {
+      e.preventDefault();
+      const fd = new FormData(e.target), name = fd.get('name').trim(), phone = fd.get('phone').trim(), address = fd.get('address').trim();
+      if (isCloudMode && sb) { const { error } = await sb.from('profiles').update({ full_name: name, phone, address }).eq('id', id); if (error) return toast(error.message, 'error'); await syncFromSupabase(); }
+      else { if (id) { const c = state.db.customers.find(x => x.id === id); c.name = name; c.email = fd.get('email').trim(); c.phone = phone; c.address = address; } else state.db.customers.push({ id: nextId('CUST', state.db.customers), name, email: fd.get('email').trim(), phone, address, passwordHash: 'demo', joined: new Date().toISOString().slice(0, 10) }); saveLocalDB(); }
+      toast('Buyer saved.', 'success'); closeModal(); render();
+    }
+    function deleteCustomer(id) { if (!confirm('Remove this buyer record?')) return; state.db.customers = state.db.customers.filter(c => c.id !== id); saveLocalDB(); toast('Buyer removed.'); render(); }
+
+    function viewHRStaff() {
+      if (!requireStaff()) return viewMasterAuth();
+      const totalPayroll = state.db.staff.filter(s => s.status === 'Active').reduce((a, b) => a + Number(b.salary || 0), 0);
+      return `
+        <div class="section-head"><div><h2>HR &amp; Staff Directory</h2><p>Internal dealership personnel &amp; payroll managed by Master Admin.</p></div><div style="display:flex;gap:10px;"><button class="btn btn-secondary" onclick="exportPayrollCSV()">Export Payroll CSV</button><button class="btn btn-primary" onclick="openStaffForm()">+ Add Employee</button></div></div>
+        <div class="grid grid-3" style="margin-bottom:22px;"><div class="card kpi-card"><div class="kpi-label">Total Staff</div><div class="kpi-value" data-count="${state.db.staff.length}">${state.db.staff.length}</div><div class="kpi-note">Across departments</div></div><div class="card kpi-card"><div class="kpi-label">Active Personnel</div><div class="kpi-value" data-count="${state.db.staff.filter(s=>s.status==='Active').length}">${state.db.staff.filter(s=>s.status==='Active').length}</div><div class="kpi-note">On roster</div></div><div class="card kpi-card"><div class="kpi-label">Monthly Payroll</div><div class="kpi-value" data-count="${totalPayroll}" data-money="1">${money(totalPayroll)}</div><div class="kpi-note">Base salaries</div></div></div>
+        <div class="card card-pad"><div class="table-wrap"><table><thead><tr><th>Emp ID</th><th>Name</th><th>Role</th><th>Department</th><th>Salary</th><th>Status</th><th>Actions</th></tr></thead><tbody>${state.db.staff.map(s => `<tr><td><strong>${escapeHtml(String(s.id).slice(0, 10))}</strong></td><td>${escapeHtml(s.name)}<br><span style="font-size:.78rem;color:var(--muted);">${escapeHtml(s.email)}</span></td><td>${escapeHtml(s.role)}</td><td>${escapeHtml(s.department)}</td><td>${money(s.salary)}</td><td><span class="badge badge-${s.status.toLowerCase()}">${escapeHtml(s.status)}</span></td><td><div style="display:flex;gap:6px;"><button class="btn btn-secondary btn-sm" onclick="openStaffForm('${escapeHtml(s.id)}')">Edit</button><button class="btn btn-danger btn-sm" onclick="deleteStaff('${escapeHtml(s.id)}')">Remove</button></div></td></tr>`).join('')}</tbody></table></div></div>`;
+    }
+    function exportPayrollCSV() { exportCSV('apexdrive_hr_payroll.csv', ['ID','Name','Email','Role','Department','Monthly Salary','Status'], state.db.staff.map(s => [s.id,s.name,s.email,s.role,s.department,s.salary,s.status])); }
+
+    function openStaffForm(id = null) {
+      const s = id ? state.db.staff.find(x => x.id === id) : null;
+      openModal(s ? 'Edit Employee' : 'Add Employee', `<form onsubmit="saveStaff(event,'${escapeHtml(id || '')}')"><div class="grid grid-2"><div class="field"><label>Full Name</label><input class="input" name="name" required value="${escapeHtml(s?.name || '')}" /></div><div class="field"><label>Email</label><input class="input" type="email" name="email" required value="${escapeHtml(s?.email || '')}" /></div><div class="field"><label>Phone</label><input class="input" name="phone" required value="${escapeHtml(s?.phone || '')}" /></div><div class="field"><label>Monthly Salary ($)</label><input class="input" type="number" name="salary" required value="${s?.salary || 4800}" /></div><div class="field"><label>Role</label><select class="input" name="role">${['Sales Executive','Showroom Manager','HR Specialist','Finance Officer'].map(o => `<option ${s?.role===o?'selected':''}>${o}</option>`).join('')}</select></div><div class="field"><label>Department</label><select class="input" name="department">${['Sales','Human Resources','Finance','Operations'].map(o => `<option ${s?.department===o?'selected':''}>${o}</option>`).join('')}</select></div></div><div class="field"><label>Status</label><select class="input" name="status">${['Active','Inactive'].map(o => `<option ${s?.status===o?'selected':''}>${o}</option>`).join('')}</select></div><div style="display:flex;gap:10px;justify-content:flex-end;"><button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button><button type="submit" class="btn btn-primary">Save Employee</button></div></form>`);
+    }
+
+    function saveStaff(e, id) {
+      e.preventDefault();
+      const fd = new FormData(e.target), name = fd.get('name').trim(), email = fd.get('email').trim(), phone = fd.get('phone').trim(), salary = Number(fd.get('salary')), role = fd.get('role'), department = fd.get('department'), status = fd.get('status');
+      if (id) { const s = state.db.staff.find(x => x.id === id); Object.assign(s, { name, email, phone, salary, role, department, status }); }
+      else state.db.staff.push({ id: nextId('STF', state.db.staff), name, email, phone, salary, role, department, status });
+      saveLocalDB(); toast('Employee record saved.', 'success'); closeModal(); render();
+    }
+    function deleteStaff(id) { if (!confirm('Remove this employee record?')) return; state.db.staff = state.db.staff.filter(s => s.id !== id); saveLocalDB(); toast('Employee removed.'); render(); }
+
+    function bootApp() {
+      try {
+        render();
+        startSpotlightLoop();
+        if (SUPABASE_CONFIG.url && SUPABASE_CONFIG.anonKey) {
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+          s.onload = () => {
+            if (window.supabase) {
+              const safeAuthStorage = {
+					getItem: (k) => safeGetStorage(window.localStorage, k),
+					setItem: (k, v) => safeSetStorage(window.localStorage, k, v),
+					removeItem: (k) => safeRemoveStorage(window.localStorage, k)
+					};
+				sb = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey, {
+				auth: { storage: safeAuthStorage }
+			});
+              isCloudMode = true;
+              state.db = { vehicles: [], customers: [], staff: JSON.parse(JSON.stringify(DEFAULT_DATA.staff)), bookings: [], sales: [], savedIds: [] };
+              state.session = null;
+              render();
+              syncFromSupabase();
+              initRealtime();
+            }
+          };
+          s.onerror = () => toast('Could not reach Supabase CDN; running in Local Mode.', 'error');
+          document.head.appendChild(s);
+        }
+      } catch (err) {
+        console.error(err);
+        const app = document.getElementById('app');
+        if (app) app.innerHTML = `<div class="card card-pad" style="border-left:4px solid #dc2626;"><h3>Startup Error</h3><p>${escapeHtml(err.message)}</p></div>`;
+      }
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bootApp);
+    else bootApp();
+  </script>
+</body>
+</html>
