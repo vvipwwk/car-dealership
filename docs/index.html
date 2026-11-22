@@ -709,6 +709,15 @@
           </div>
         </div>`;
     }
+	  
+	function canBuyerPurchase(v) {
+      if (v.status === 'Available') return true;
+      if (v.status === 'Reserved' && state.session) {
+        if (state.session.type === 'staff') return true;
+        return state.db.bookings.some(b => b.vehicleId === v.id && b.customerId === state.session.id && ['Pending', 'Confirmed'].includes(b.status));
+      }
+      return false;
+    }
 
     function carCardHTML(v) {
       const badgeClass = v.status === 'Available' ? 'badge-available' : (v.status === 'Reserved' ? 'badge-reserved' : 'badge-sold');
@@ -731,7 +740,7 @@
             <div class="car-specs"><span class="spec-chip">${escapeHtml(v.body)}</span><span class="spec-chip">${escapeHtml(v.fuel)}</span><span class="spec-chip">${escapeHtml(v.transmission)}</span><span class="spec-chip">${Number(v.mileage).toLocaleString()} mi</span></div>
             <div class="car-actions">
               <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="navigate('c-details','${escapeHtml(v.id)}')">Details</button>
-              <button class="btn btn-primary btn-sm" style="flex:1;" ${v.status === 'Sold' ? 'disabled' : ''} onclick="navigate('book-car','${escapeHtml(v.id)}')">Book</button>
+              <button class="btn btn-primary btn-sm" style="flex:1;" ${v.status !== 'Available' ? 'disabled' : ''} onclick="navigate('book-car','${escapeHtml(v.id)}')">${v.status === 'Available' ? 'Book' : escapeHtml(v.status)}</button>
             </div>
           </div>
         </article>`;
@@ -870,8 +879,8 @@
               <div><strong>Listed Color:</strong> ${escapeHtml(v.colorName)}</div><div><strong>Location:</strong> ${escapeHtml(v.branch)}</div>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <button class="btn btn-secondary" ${v.status==='Sold'?'disabled':''} onclick="navigate('book-car','${escapeHtml(v.id)}')">Book Test Drive</button>
-              <button class="btn btn-primary" ${v.status==='Sold'?'disabled':''} onclick="navigate('buy-car','${escapeHtml(v.id)}')">Buy / Financing Calculator</button>
+			  <button class="btn btn-secondary" ${v.status!=='Available'?'disabled':''} onclick="navigate('book-car','${escapeHtml(v.id)}')">${v.status==='Available'?'Book Test Drive':escapeHtml(v.status)}</button>
+              <button class="btn btn-primary" ${!canBuyerPurchase(v)?'disabled':''} onclick="navigate('buy-car','${escapeHtml(v.id)}')">${v.status==='Sold'?'Sold':(!canBuyerPurchase(v)?'Reserved by Buyer':'Buy / Financing Calculator')}</button>
             </div>
           </div>
         </div></div>`;
@@ -879,7 +888,7 @@
 
     function viewBookCar() {
       if (!state.session) { toast('Please sign in as a Buyer to book a test drive.', 'info'); return viewBuyerAuth(); }
-      const bookable = state.db.vehicles.filter(x => x.status !== 'Sold');
+      const bookable = state.db.vehicles.filter(x => x.status === 'Available');
       if (!bookable.length) return `<div class="card empty-state">No available vehicles to book right now.</div>`;
       const v = bookable.find(x => x.id === state.selectedVehicleId) || bookable[0], minDate = new Date().toISOString().slice(0, 10);
       return `
@@ -902,27 +911,32 @@
     }
 
     async function submitBooking(e) {
-      e.preventDefault();
-      const fd = new FormData(e.target), vehicleId = fd.get('vehicleId'), date = fd.get('date'), timeSlot = fd.get('timeSlot');
-      if (state.db.bookings.some(b => b.vehicleId === vehicleId && b.date === date && b.timeSlot === timeSlot && ['Pending', 'Confirmed'].includes(b.status))) {
-        return toast('That vehicle already has an appointment for that date & time slot.', 'error');
-      }
-      const id = 'BK-' + Math.floor(2050 + Math.random() * 7900);
-      if (isCloudMode && sb) {
-        const { error } = await sb.from('bookings').insert({ id, vehicle_id: vehicleId, customer_id: state.session.id, customer_name: state.session.name, booking_date: date, time_slot: timeSlot, branch: fd.get('branch'), phone: fd.get('phone'), notes: fd.get('notes'), status: 'Pending' });
-        if (error) return toast(error.message.includes('unique') ? 'Time slot already reserved!' : error.message, 'error');
-        await syncFromSupabase();
-      } else {
-        state.db.bookings.unshift({ id, vehicleId, customerId: state.session.id, customerName: state.session.name, date, timeSlot, branch: fd.get('branch'), phone: fd.get('phone'), notes: fd.get('notes'), status: 'Pending', createdAt: new Date().toISOString().slice(0, 10) });
-        saveLocalDB();
-      }
-      toast('Test drive booking submitted!', 'success'); navigate('book-record');
-    }
+    e.preventDefault();
+    const fd = new FormData(e.target), vehicleId = fd.get('vehicleId'), date = fd.get('date'), timeSlot = fd.get('timeSlot');
+    const v = state.db.vehicles.find(x => x.id === vehicleId);
+    if (!v || v.status !== 'Available') return toast('Sorry, this vehicle is no longer Available.', 'error');
 
+    if (isCloudMode && sb) {
+      const { error } = await sb.rpc('create_vehicle_booking', {
+        p_vehicle_id: vehicleId, p_booking_date: date, p_time_slot: timeSlot,
+        p_branch: fd.get('branch'), p_phone: fd.get('phone'), p_notes: fd.get('notes')
+      });
+      if (error) return toast(error.message, 'error');
+      await syncFromSupabase();
+    } else {
+      const id = 'BK-' + Math.floor(2050 + Math.random() * 7900);
+      v.status = 'Reserved';
+      state.db.bookings.unshift({ id, vehicleId, customerId: state.session.id, customerName: state.session.name, date, timeSlot, branch: fd.get('branch'), phone: fd.get('phone'), notes: fd.get('notes'), status: 'Pending', createdAt: new Date().toISOString().slice(0, 10) });
+      saveLocalDB();
+    }
+    toast('Vehicle reserved! Test drive booking submitted.', 'success');
+    navigate('book-record');
+    }
+	  
     function viewBuyCar() {
       if (!state.session) { toast('Please sign in as a Buyer to complete a purchase.', 'info'); return viewBuyerAuth(); }
       const v = state.db.vehicles.find(x => x.id === state.selectedVehicleId);
-      if (!v || v.status === 'Sold') return `<div class="card empty-state">This vehicle is no longer available.</div>`;
+      if (!v || !canBuyerPurchase(v)) return `<div class="card empty-state">This vehicle is currently reserved or sold.</div>`;
       const defaultDown = Math.round(v.price * 0.2);
       return `
         <div style="max-width:860px;margin:0 auto;">
@@ -996,9 +1010,22 @@
     }
 
     async function cancelBooking(id) {
-      if (isCloudMode && sb) { const { error } = await sb.from('bookings').update({ status: 'Cancelled' }).eq('id', id); if (error) return toast(error.message, 'error'); await syncFromSupabase(); }
-      else { const b = state.db.bookings.find(x => x.id === id); if (b) { b.status = 'Cancelled'; saveLocalDB(); } }
-      toast('Booking cancelled.'); render();
+      if (isCloudMode && sb) {
+        const { error } = await sb.rpc('cancel_my_booking', { p_booking_id: id });
+        if (error) return toast(error.message, 'error');
+        await syncFromSupabase();
+      } else {
+        const b = state.db.bookings.find(x => x.id === id);
+        if (b) {
+          b.status = 'Cancelled';
+          const v = state.db.vehicles.find(x => x.id === b.vehicleId);
+          if (v && v.status === 'Reserved' && !state.db.bookings.some(x => x.vehicleId === b.vehicleId && x.id !== id && ['Pending', 'Confirmed'].includes(x.status))) {
+            v.status = 'Available';
+          }
+          saveLocalDB();
+        }
+      }
+      toast('Booking cancelled & vehicle released.'); render();
     }
 
     function requireStaff() { return state.session?.type === 'staff'; }
@@ -1099,8 +1126,22 @@
     function exportSalesCSV() { exportCSV('apexdrive_sales.csv', ['Invoice','Vehicle','Buyer','Payment Method','Down Payment','Trade-In','Total Amount','Date'], state.db.sales.map(s => [s.id,s.vehicleLabel,s.customerName,s.paymentMethod,s.downPayment,s.tradeIn,s.totalAmount,s.date])); }
 
     async function updateBookingStatus(id, status) {
-      if (isCloudMode && sb) { const { error } = await sb.from('bookings').update({ status }).eq('id', id); if (error) return toast(error.message, 'error'); await syncFromSupabase(); }
-      else { const b = state.db.bookings.find(x => x.id === id); if (b) { b.status = status; saveLocalDB(); } }
+      if (isCloudMode && sb) {
+        const { error } = await sb.rpc('admin_set_booking_status', { p_booking_id: id, p_status: status });
+        if (error) return toast(error.message, 'error');
+        await syncFromSupabase();
+      } else {
+        const b = state.db.bookings.find(x => x.id === id);
+        if (b) {
+          b.status = status;
+          const v = state.db.vehicles.find(x => x.id === b.vehicleId);
+          if (v && v.status !== 'Sold') {
+            if (['Pending', 'Confirmed'].includes(status)) v.status = 'Reserved';
+            else if (!state.db.bookings.some(x => x.vehicleId === b.vehicleId && x.id !== id && ['Pending', 'Confirmed'].includes(x.status))) v.status = 'Available';
+          }
+          saveLocalDB();
+        }
+      }
       toast(`Booking ${id} marked as ${status}.`, 'success'); render();
     }
 
