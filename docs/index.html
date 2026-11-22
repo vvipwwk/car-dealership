@@ -10,25 +10,64 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
   <style>
 
-	:root{--input-bg:#fff;--muted-2:#475569;--label:#334155;--thumb-bg:radial-gradient(circle at 50% 25%,#fff 0%,#eef2f7 65%,#e2e8f0 100%);--row-hover:#fafcff;--cta-bg:linear-gradient(135deg,#eff6ff 0%,#fff 100%);--cta-border:#bfdbfe}
-    [data-theme="dark"]{--bg:#060b16;--surface:#0f172a;--surface-2:#162035;--input-bg:#0b1324;--ink:#f1f5f9;--muted:#94a3b8;--muted-2:#cbd5e1;--label:#cbd5e1;--line:#1e293b;--primary:#3b82f6;--primary-soft:rgba(59,130,246,.16);--success:#10b981;--success-soft:rgba(16,185,129,.16);--warning:#f59e0b;--warning-soft:rgba(245,158,11,.16);--danger:#f87171;--danger-soft:rgba(248,113,113,.16);--thumb-bg:radial-gradient(circle at 50% 25%,#1e293b 0%,#0f172a 70%,#090e1a 100%);--row-hover:#17223a;--cta-bg:linear-gradient(135deg,#13213d 0%,#0f172a 100%);--cta-border:#1e3a8a;--shadow-sm:0 2px 8px rgba(0,0,0,.35);--shadow-md:0 18px 36px -8px rgba(0,0,0,.55);--shadow-lg:0 24px 48px -12px rgba(0,0,0,.65)}
-    [data-theme="dark"] .input,[data-theme="dark"] select.input,[data-theme="dark"] textarea.input{background:var(--input-bg);color:var(--ink)}
-    [data-theme="dark"] .field label{color:var(--label)}
-    [data-theme="dark"] .car-thumb{background:var(--thumb-bg)}
-    [data-theme="dark"] .spec-chip{color:var(--muted-2)}
-    [data-theme="dark"] .modal,[data-theme="dark"] .modal-head,[data-theme="dark"] footer{background:var(--surface);color:var(--ink)}
-    [data-theme="dark"] tr:hover td{background:var(--row-hover)}
-    [data-theme="dark"] .buyer-cta{background:var(--cta-bg);border-color:var(--cta-border)}
-    [data-theme="dark"] .icon-chip{background:rgba(15,23,42,.82);color:#fff;border-color:rgba(255,255,255,.18)}
+	:root{
+      --input-bg:#ffffff;--muted-2:#475569;--label:#334155;
+      --thumb-bg:radial-gradient(circle at 50% 25%,#fff 0%,#eef2f7 65%,#e2e8f0 100%);
+      --row-hover:#fafcff;--cta-bg:linear-gradient(135deg,#eff6ff 0%,#fff 100%);--cta-border:#bfdbfe;
+    }
+    html[data-theme="dark"]{
+      color-scheme:dark;
+      --bg:#060b16;--surface:#0f172a;--surface-2:#162035;--input-bg:#0b1324;
+      --ink:#f8fafc;--muted:#94a3b8;--muted-2:#cbd5e1;--label:#e2e8f0;--line:#1e293b;
+      --primary:#3b82f6;--primary-soft:rgba(59,130,246,.18);
+      --success:#10b981;--success-soft:rgba(16,185,129,.18);
+      --warning:#f59e0b;--warning-soft:rgba(245,158,11,.18);
+      --danger:#f87171;--danger-soft:rgba(248,113,113,.18);
+      --thumb-bg:radial-gradient(circle at 50% 25%,#1e293b 0%,#0f172a 70%,#090e1a 100%);
+      --row-hover:#17223a;--cta-bg:linear-gradient(135deg,#13213d 0%,#0f172a 100%);--cta-border:#1e3a8a;
+      --shadow-sm:0 2px 8px rgba(0,0,0,.35);--shadow-md:0 18px 36px -8px rgba(0,0,0,.55);--shadow-lg:0 24px 48px -12px rgba(0,0,0,.65);
+    }
+    html[data-theme="dark"],html[data-theme="dark"] body{background:var(--bg)!important;color:var(--ink)!important}
+    html[data-theme="dark"] .card,
+    html[data-theme="dark"] .cat-pill,
+    html[data-theme="dark"] .trust-item,
+    html[data-theme="dark"] .modal,
+    html[data-theme="dark"] .modal-head,
+    html[data-theme="dark"] footer{background:var(--surface)!important;color:var(--ink)!important;border-color:var(--line)!important}
+    html[data-theme="dark"] .btn-secondary{background:var(--surface-2)!important;color:var(--ink)!important;border-color:var(--line)!important}
+    html[data-theme="dark"] .btn-secondary:hover{background:#1e293b!important}
+    html[data-theme="dark"] .btn-ghost{color:var(--muted)!important}
+    html[data-theme="dark"] .btn-ghost:hover{background:var(--surface-2)!important;color:var(--ink)!important}
+    html[data-theme="dark"] .input,
+    html[data-theme="dark"] select.input,
+    html[data-theme="dark"] textarea.input{background:var(--input-bg)!important;color:#f8fafc!important;border-color:#334155!important}
+    html[data-theme="dark"] .input::placeholder{color:#94a3b8!important}
+    html[data-theme="dark"] select.input option{background:#0f172a;color:#f8fafc}
+    html[data-theme="dark"] .field label{color:var(--label)!important}
+    html[data-theme="dark"] .car-thumb{background:var(--thumb-bg)!important;border-color:var(--line)!important}
+    html[data-theme="dark"] .spec-chip{background:var(--surface-2)!important;color:#cbd5e1!important;border-color:var(--line)!important}
+    html[data-theme="dark"] th{background:var(--surface-2)!important;color:var(--muted)!important;border-color:var(--line)!important}
+    html[data-theme="dark"] td{color:var(--ink)!important;border-color:var(--line)!important}
+    html[data-theme="dark"] tr:hover td{background:var(--row-hover)!important}
+    html[data-theme="dark"] .buyer-cta{background:var(--cta-bg)!important;border-color:var(--cta-border)!important}
+    html[data-theme="dark"] .cat-pill span{background:var(--surface-2)!important;color:var(--muted)!important}
+    html[data-theme="dark"] .icon-chip{background:rgba(15,23,42,.85);color:#fff;border-color:rgba(255,255,255,.18)}
+    html[data-theme="dark"] .footer-link{color:var(--muted)!important}
+    html[data-theme="dark"] .footer-link:hover{color:#fff!important}
+    html[data-theme="dark"] .angle-tab{background:var(--surface-2);color:var(--ink);border-color:var(--line)}
+    html[data-theme="dark"] .angle-tab.active{background:var(--primary-soft);color:#93c5fd;border-color:var(--primary)}
     .theme-btn{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);color:#e2e8f0;padding:6px 11px;border-radius:9px;font-size:.8rem;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:5px}
     .theme-btn:hover{background:rgba(255,255,255,.18);color:#fff}
     .angle-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}
     .angle-tab{background:var(--surface-2);border:1.5px solid var(--line);border-radius:11px;padding:8px 6px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;transition:all .16s ease;color:var(--ink);font-size:.74rem;font-weight:600}
     .angle-tab:hover{border-color:var(--primary);transform:translateY(-1px)}
     .angle-tab.active{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
-    .angle-mini{width:100%;height:42px;border-radius:7px;background:var(--thumb-bg);overflow:hidden;display:grid;place-items:center}
+    .angle-mini{width:100%;height:44px;border-radius:7px;background:var(--thumb-bg);overflow:hidden;display:grid;place-items:center}
     .angle-mini img{width:100%;height:100%;object-fit:cover}
-    .angle-pill{position:absolute;bottom:10px;left:12px;z-index:2;background:rgba(11,18,32,.8);color:#fff;font-size:.74rem;font-weight:600;padding:4px 10px;border-radius:8px;backdrop-filter:blur(6px)}
+    .angle-mini svg{width:100%;height:100%;max-height:42px}
+    .angle-pill{position:absolute;bottom:10px;left:12px;z-index:2;background:rgba(11,18,32,.84);color:#fff;font-size:.74rem;font-weight:600;padding:4px 10px;border-radius:8px;backdrop-filter:blur(6px)}
+    .stage-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:3;background:rgba(11,18,32,.72);color:#fff;border:1px solid rgba(255,255,255,.2);width:34px;height:34px;border-radius:50%;cursor:pointer;display:grid;place-items:center;font-size:1.1rem}
+    .stage-arrow:hover{background:var(--primary)}
 	  
 	.spotlight-car-anim,.spotlight-floor img{width:100%;height:100%;object-fit:cover;border-radius:12px}
 	:root{--bg:#f3f5fa;--surface:#fff;--surface-2:#f8fafc;--ink:#0b1220;--muted:#64748b;--line:#e2e8f0;--primary:#2563eb;--primary-soft:#eff6ff;--success:#059669;--success-soft:#ecfdf5;--warning:#d97706;--warning-soft:#fffbeb;--danger:#dc2626;--danger-soft:#fef2f2;--dark-nav:#070c17;--radius:16px;--shadow-sm:0 2px 6px rgba(15,23,42,.05);--shadow-md:0 16px 32px -8px rgba(15,23,42,.12);--shadow-lg:0 24px 48px -12px rgba(11,18,32,.22)}
@@ -507,7 +546,7 @@
 
     function getVehicleAngleUrl(v, angle) {
       if (angle === 'front') return v.imageFront || v.imageUrl || '';
-      if (angle === 'side') return v.imageSide || v.imageUrl || '';
+      if (angle === 'side') return v.imageSide || '';
       if (angle === 'interior') return v.imageInterior || '';
       if (angle === 'back') return v.imageBack || '';
       return v.imageFront || v.imageSide || v.imageUrl || '';
@@ -552,10 +591,24 @@
 		  state.selectedVehicleId = vehicleId;
 		  state.previewColor = null; 
 		  state.previewMirrored = false;
-		  function setVehicleAngle(angle) {
-      		state.activeAngle = angle;
-      		state.previewMirrored = false;
-      	  render();
+		  function refreshVehicleStage() {
+      const host = document.getElementById('vehicleStageHost');
+      const v = state.db.vehicles.find(x => x.id === state.selectedVehicleId) || state.db.vehicles[0];
+      if (host && v) host.innerHTML = renderVehicleStageHTML(v);
+      else render();
+    	}
+
+    function setVehicleAngle(angle) {
+      state.activeAngle = angle;
+      state.previewMirrored = false;
+      refreshVehicleStage();
+    	}
+
+    function stepVehicleAngle(delta) {
+      const order = ['front', 'side', 'interior', 'back'];
+      const idx = order.indexOf(state.activeAngle || 'front');
+      setVehicleAngle(order[(idx + delta + order.length) % order.length]);
+    	}
     }
 	  }
       const tb = document.getElementById('topbar');
@@ -943,9 +996,7 @@
       applyRevealAndCounters();
     }
 
-    function viewVehicleDetails() {
-      const v = state.db.vehicles.find(x => x.id === state.selectedVehicleId) || state.db.vehicles[0];
-      if (!v) return `<div class="card empty-state">Vehicle not found.</div>`;
+    function renderVehicleStageHTML(v) {
       const badgeClass = v.status === 'Available' ? 'badge-available' : (v.status === 'Reserved' ? 'badge-reserved' : 'badge-sold');
       const activeColor = state.previewColor || v.color;
       const activeAngle = state.activeAngle || 'front';
@@ -960,6 +1011,33 @@
       const swatches = [v.color, '#0f172a', '#2563eb', '#dc2626', '#0f766e', '#94a3b8'].filter((c, i, a) => a.indexOf(c) === i);
 
       return `
+        <div class="car-thumb" style="height:320px;border-radius:14px;border:1px solid var(--line);">
+          <span class="year-pill">${v.year}</span>
+          <span class="badge ${badgeClass}">${escapeHtml(v.status)}</span>
+          <span class="angle-pill">${escapeHtml(activeLabel)}${!activePhoto ? ' (Preview)' : ''}</span>
+          <button type="button" class="stage-arrow" style="left:10px;" onclick="stepVehicleAngle(-1)" title="Previous view">&#8249;</button>
+          <button type="button" class="stage-arrow" style="right:10px;" onclick="stepVehicleAngle(1)" title="Next view">&#8250;</button>
+          ${carMediaHTML(v, activeColor, state.previewMirrored, activeAngle)}
+          <div class="thumb-tools">
+            <button type="button" class="icon-chip" onclick="state.previewMirrored=!state.previewMirrored;refreshVehicleStage();">&#8644; Flip</button>
+          </div>
+        </div>
+        <div class="angle-grid">
+          ${angles.map(a => `
+            <button type="button" class="angle-tab ${activeAngle===a.key?'active':''}" onclick="setVehicleAngle('${a.key}')">
+              <div class="angle-mini">${carMediaHTML(v, activeColor, false, a.key)}</div>
+              <span>${a.label}</span>
+            </button>
+          `).join('')}
+        </div>
+        ${!activePhoto ? `<div class="swatch-row"><span style="font-size:.78rem;color:var(--muted);font-weight:600;">Studio Finish Preview:</span>${swatches.map(c => `<button type="button" class="swatch-btn ${activeColor===c?'active':''}" style="background:${escapeHtml(c)};" onclick="state.previewColor='${escapeHtml(c)}';refreshVehicleStage();"></button>`).join('')}</div>` : ''}
+      `;
+    }
+
+    function viewVehicleDetails() {
+      const v = state.db.vehicles.find(x => x.id === state.selectedVehicleId) || state.db.vehicles[0];
+      if (!v) return `<div class="card empty-state">Vehicle not found.</div>`;
+      return `
         <div style="margin-bottom:16px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;">
           <button class="btn btn-secondary btn-sm" onclick="navigate('c-vehicles')">&larr; Back to Showroom</button>
           <div style="display:flex;gap:8px;">
@@ -968,26 +1046,7 @@
           </div>
         </div>
         <div class="card card-pad"><div class="grid grid-2" style="align-items:start;">
-          <div>
-            <div class="car-thumb" style="height:320px;border-radius:14px;border:1px solid var(--line);">
-              <span class="year-pill">${v.year}</span>
-              <span class="badge ${badgeClass}">${escapeHtml(v.status)}</span>
-              <span class="angle-pill">${escapeHtml(activeLabel)}</span>
-              ${carMediaHTML(v, activeColor, state.previewMirrored, activeAngle)}
-              <div class="thumb-tools">
-                <button class="icon-chip" onclick="state.previewMirrored=!state.previewMirrored;render();">&#8644; Flip</button>
-              </div>
-            </div>
-            <div class="angle-grid">
-              ${angles.map(a => `
-                <button type="button" class="angle-tab ${activeAngle===a.key?'active':''}" onclick="setVehicleAngle('${a.key}')">
-                  <div class="angle-mini">${carMediaHTML(v, activeColor, false, a.key)}</div>
-                  <span>${a.label}</span>
-                </button>
-              `).join('')}
-            </div>
-            ${!activePhoto ? `<div class="swatch-row"><span style="font-size:.78rem;color:var(--muted);font-weight:600;">Studio Finish Preview:</span>${swatches.map(c => `<button class="swatch-btn ${activeColor===c?'active':''}" style="background:${escapeHtml(c)};" onclick="state.previewColor='${escapeHtml(c)}';render();"></button>`).join('')}</div>` : ''}
-          </div>
+          <div id="vehicleStageHost">${renderVehicleStageHTML(v)}</div>
           <div>
             <div style="font-size:.82rem;color:var(--muted);font-weight:600;">STOCK #${escapeHtml(v.id)} &bull; VIN ${escapeHtml(v.vin)}</div>
             <h1 style="margin:6px 0;font-size:2rem;">${v.year} ${escapeHtml(v.make)} ${escapeHtml(v.model)}</h1>
