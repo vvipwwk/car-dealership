@@ -615,8 +615,7 @@
       const order = ['front', 'side', 'interior', 'back'];
       const idx = order.indexOf(state.activeAngle || 'front');
       setVehicleAngle(order[(idx + delta + order.length) % order.length]);
-    }
-}
+	}
 	  
       const tb = document.getElementById('topbar');
       if (tb) tb.classList.remove('mobile-open');
