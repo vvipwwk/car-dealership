@@ -845,7 +845,6 @@
 		  <div class="cat-pill" onclick="quickFilterBody('Compact')">Hatchbacks <span>${countBy('Compact')}</span></div>
 		  <div class="cat-pill" onclick="quickFilterBody('Exotic')">Super Exotics <span>${countBy('Exotic')}</span></div>
 		  <div class="cat-pill" onclick="quickFilterBody('Muscle')">Muscles <span>${countBy('Muscle')}</span></div>
-          <div class="cat-pill" onclick="quickFilterBody('Electric')">Electric EVs <span>${countBy('Electric')}</span></div>
         </div>
         <div class="section-head reveal">
           <div><h2>Featured Showroom Vehicles</h2><p>Bookmark to your Saved Garage or select up to 3 models to compare.</p></div>
@@ -981,7 +980,7 @@
         <div class="card card-pad" style="margin-bottom:22px;">
           <div class="grid grid-4" style="gap:12px;">
             <input class="input" placeholder="Search make, model, year..." value="${escapeHtml(f.search)}" oninput="state.filters.search=this.value;renderVehicleGrid();" />
-            <select class="input" onchange="state.filters.body=this.value;renderVehicleGrid();">${['All','Sedan','SUV','Coupe','Electric','MPV','Exotic','Compact','Muscle'].map(o => `<option ${f.body===o?'selected':''}>${o}</option>`).join('')}</select>
+            <select class="input" onchange="state.filters.body=this.value;renderVehicleGrid();">${['All','Sedan','SUV','Coupe','MPV','Exotic','Compact','Muscle'].map(o => `<option ${f.body===o?'selected':''}>${o}</option>`).join('')}</select>
             <select class="input" onchange="state.filters.fuel=this.value;renderVehicleGrid();">${['All','Petrol','Hybrid','Electric'].map(o => `<option ${f.fuel===o?'selected':''}>${o}</option>`).join('')}</select>
             <select class="input" onchange="state.filters.sort=this.value;renderVehicleGrid();"><option value="newest" ${f.sort==='newest'?'selected':''}>Sort: Newest First</option><option value="price-asc" ${f.sort==='price-asc'?'selected':''}>Price: Low to High</option><option value="price-desc" ${f.sort==='price-desc'?'selected':''}>Price: High to Low</option></select>
           </div>
@@ -1268,7 +1267,7 @@
             <div class="field"><label>Model</label><input class="input" name="model" required value="${escapeHtml(v?.model || '')}" placeholder="Supra GR" /></div>
             <div class="field"><label>Year</label><input class="input" type="number" name="year" required value="${v?.year || 2025}" /></div>
             <div class="field"><label>Price ($)</label><input class="input" type="number" name="price" required value="${v?.price || 45000}" /></div>
-            <div class="field"><label>Body Style</label><select class="input" name="body">${['Sedan','SUV','Coupe','Electric','MPV','Exotic','Compact','Muscle'].map(o => `<option ${v?.body===o?'selected':''}>${o}</option>`).join('')}</select></div>
+            <div class="field"><label>Body Style</label><select class="input" name="body">${['Sedan','SUV','Coupe','MPV','Exotic','Compact','Muscle'].map(o => `<option ${v?.body===o?'selected':''}>${o}</option>`).join('')}</select></div>
             <div class="field"><label>Fuel Type</label><select class="input" name="fuel">${['Petrol','Hybrid','Electric'].map(o => `<option ${v?.fuel===o?'selected':''}>${o}</option>`).join('')}</select></div>
             <div class="field"><label>Transmission</label><input class="input" name="transmission" required value="${escapeHtml(v?.transmission || 'Automatic')}" /></div>
             <div class="field"><label>Mileage</label><input class="input" type="number" name="mileage" required value="${v?.mileage ?? 0}" /></div>
