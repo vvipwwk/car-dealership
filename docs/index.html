@@ -242,7 +242,7 @@
       <div id="footerTools" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;"></div>
     </div>
   </footer>
-  <div class="modal-backdrop" id="modalBackdrop" onclick="if(event.target===this) closeModal()">
+  <div class="modal-backdrop" id="modalBackdrop" onmousedown="window._mbDown=(event.target===this)" onclick="if(window._mbDown && event.target===this && !this.querySelector('form')) closeModal(); window._mbDown=false;">
     <div class="modal">
       <div class="modal-head"><h3 id="modalTitle">Modal</h3><button class="btn btn-ghost btn-sm no-print" onclick="closeModal()">&#10005;</button></div>
       <div class="modal-body" id="modalBody"></div>
