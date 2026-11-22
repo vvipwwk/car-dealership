@@ -585,32 +585,37 @@
     }
 
     function navigate(route, vehicleId = null) {
-	  state.activeAngle = 'front';
+      state.activeAngle = 'front';
       state.route = route;
-      if (vehicleId) { 
-		  state.selectedVehicleId = vehicleId;
-		  state.previewColor = null; 
-		  state.previewMirrored = false;
-		  function refreshVehicleStage() {
+      if (vehicleId) {
+        state.selectedVehicleId = vehicleId;
+        state.previewColor = null;
+        state.previewMirrored = false;
+      }
+      const tb = document.getElementById('topbar');
+      if (tb) tb.classList.remove('mobile-open');
+      if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
+      render();
+    }
+
+    function refreshVehicleStage() {
       const host = document.getElementById('vehicleStageHost');
       const v = state.db.vehicles.find(x => x.id === state.selectedVehicleId) || state.db.vehicles[0];
       if (host && v) host.innerHTML = renderVehicleStageHTML(v);
       else render();
-    	}
+    }
 
     function setVehicleAngle(angle) {
       state.activeAngle = angle;
       state.previewMirrored = false;
       refreshVehicleStage();
-    	}
+    }
 
     function stepVehicleAngle(delta) {
       const order = ['front', 'side', 'interior', 'back'];
       const idx = order.indexOf(state.activeAngle || 'front');
       setVehicleAngle(order[(idx + delta + order.length) % order.length]);
-    	}
     }
-	  }
       const tb = document.getElementById('topbar');
       if (tb) tb.classList.remove('mobile-open');
       if (typeof window.scrollTo === 'function') window.scrollTo({ top: 0, behavior: 'smooth' });
